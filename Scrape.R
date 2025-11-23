@@ -68,7 +68,13 @@ rm(game_ids_by_year, years, get_season_game_ids)
 games <- games %>% 
   filter(substring(gid, 1, 3) %in% c('002', '004'))
 
-# Get all the pbps.
+# Get all the pbps (~10 mins).
 pbps  <- games$gid |>
   map_dfr(get_pbp_one)
 rm(get_pbp_one)
+
+# Split by point types.
+twos   <- pbps %>% 
+  filter(actionType == '2pt')
+threes <- pbps %>% 
+  filter(actionType == '3pt')
