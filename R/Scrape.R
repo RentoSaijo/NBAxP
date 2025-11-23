@@ -100,8 +100,6 @@ pbps <- pbps %>%
     actionNumber, 
     teamId,
     personId,
-    area,
-    areaDetail,
     x,
     y,
     side,
