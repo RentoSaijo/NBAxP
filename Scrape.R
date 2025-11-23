@@ -69,12 +69,34 @@ games <- games %>%
   filter(substring(gid, 1, 3) %in% c('002', '004'))
 
 # Get all the pbps (~10 mins).
-pbps  <- games$gid |>
+pbps <- games$gid |>
   map_dfr(get_pbp_one)
 rm(get_pbp_one)
 
+# Keep only relevant columns.
+pbps <- pbps %>% 
+  select(
+    actionType, 
+    gid, 
+    actionNumber, 
+    teamId,
+    personId,
+    area,
+    areaDetail,
+    subType, 
+    descriptor,
+    qualifiers, 
+    x,
+    y,
+    shotDistance,
+    side,
+    shotResult
+  )
+
 # Split by point types.
 twos   <- pbps %>% 
-  filter(actionType == '2pt')
+  filter(actionType == '2pt') %>% 
+  select(-actionType)
 threes <- pbps %>% 
-  filter(actionType == '3pt')
+  filter(actionType == '3pt') %>% 
+  select(-actionType)
