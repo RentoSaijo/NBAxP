@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width'>
+
+    <!-- D3 + helpers -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.min.js'></script>
+    <script src="https://d3js.org/d3-contour.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+    <!-- Your JS files -->
+    <script src='regions.js'></script>
+    <script src='Court.js'></script>
+
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700' rel='stylesheet'>
+    <title>Visualization Project</title>
+</head>
+<body>
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    #court {
+        position: fixed;
+        left: 0px;
+        right: 0px;
+        top: 50px;
+        bottom: 0px;
+    }
+
+
+
+</style>
+
+<h2 id='caption'></h2>
+<div id='court'></div>
+<div id='stats'></div>
+
+<!-- no inline <script> here anymore; Court.js handles setup -->
+
+</body>
+</html>
