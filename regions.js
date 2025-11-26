@@ -1,5 +1,5 @@
 // regions.js
-// Region IDs + label positions + 4-point polygons (in court coords).
+// Region IDs + label positions + polygons (in court coords).
 
 const COURT_REGIONS = [
     {
@@ -53,7 +53,7 @@ const COURT_REGIONS = [
     {
         id: 5,
         labelX: 0.00,
-        labelY: 0.75,  // this is still centered between -4 and 5.5
+        labelY: 0.75,  // centered between -4 and 5.5
         // Lower paint (baseline to mid-line, lane to lane)
         polygon: [
             [-8, -4],   // left lane line, baseline
@@ -112,7 +112,7 @@ const COURT_REGIONS = [
         ]
     },
     {
-        id: 11,
+        id: 10,
         labelX: 4.00,
         labelY: 19.70,
         // Right high elbow
@@ -123,47 +123,42 @@ const COURT_REGIONS = [
             [0, 24]
         ]
     },
+
+    // 11: combined region from old 11 + 13 (left sideline deep region)
+    {
+        id: 11,
+        // roughly the centroid of the combined polygon
+        labelX: -21.18,
+        labelY: 25.68,
+        polygon: [
+            [-25.00, 10.00],  // bottom-left
+            [-22.00, 10.00],  // bottom-right near arc
+            [-11.70, 22.42],  // mid-right (old 11 upper-right)
+            [-22.22, 43.00],  // top-right (old 13 upper-right)
+            [-25.00, 43.00]   // top-left on sideline
+        ]
+    },
+
+    // 12: combined region from old 12 + 16 (right sideline deep region)
     {
         id: 12,
-        labelX: -21.64,
-        labelY: 15.96,
-        // Left above-break deep (outside arc)
+        // symmetric centroid on the right side
+        labelX: 21.18,
+        labelY: 25.68,
         polygon: [
-            [-25, 10],
-            [-22, 10],
-            [-11.7, 22.42],
-            [-25, 22.42]
+            [22.00, 10.00],   // bottom-left near arc
+            [25.00, 10.00],   // bottom-right on sideline
+            [25.00, 43.00],   // top-right on sideline
+            [22.22, 43.00],   // top inner
+            [11.70, 22.42]    // mid-inner (old 12 upper-left)
         ]
     },
+
     {
         id: 13,
-        labelX: 21.64,
-        labelY: 15.96,
-        // Right above-break deep
-        polygon: [
-            [22, 10],
-            [25, 10],
-            [25, 22.42],
-            [11.7, 22.42]
-        ]
-    },
-    {
-        id: 14,
-        labelX: -20.30,
-        labelY: 32.46,
-        // Left corner deep three
-        polygon: [
-            [-25, 22.42],
-            [-11.75, 22.42],
-            [-22.22, 43],
-            [-25, 43]
-        ]
-    },
-    {
-        id: 15,
         labelX: -7.80,
         labelY: 32.46,
-        // Left-center deep three
+        // Left-center deep three (unchanged)
         polygon: [
             [-11.75, 22.42],
             [0, 24],
@@ -172,27 +167,15 @@ const COURT_REGIONS = [
         ]
     },
     {
-        id: 16,
+        id: 14,
         labelX: 7.80,
         labelY: 32.46,
-        // Right-center deep three
+        // Right-center deep three (unchanged)
         polygon: [
             [0, 24],
             [11.75, 22.42],
             [22.22, 43],
             [0, 43]
-        ]
-    },
-    {
-        id: 17,
-        labelX: 20.30,
-        labelY: 32.46,
-        // Right deep corner three
-        polygon: [
-            [11.75, 22.42],
-            [25, 22.42],
-            [25, 43],
-            [22.22, 43]
         ]
     }
 ];
