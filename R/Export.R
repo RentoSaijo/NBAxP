@@ -3,7 +3,7 @@ library(tidyverse)
 
 # Load data.
 twos <- read_csv(
-  'data/twos_20222023_20252026_predicted.csv',
+  'data/twos_20252026_predicted.csv',
   col_types      = cols(.default = col_character()),
   na             = c('', 'NA', 'null'),
   show_col_types = FALSE
@@ -13,7 +13,17 @@ twos <- read_csv(
     ~ parse_guess(.x, na = c('', 'NA', 'null'))
   ))
 threes <- read_csv(
-  'data/threes_20222023_20252026_predicted.csv',
+  'data/threes_20252026_predicted.csv',
+  col_types      = cols(.default = col_character()),
+  na             = c('', 'NA', 'null'),
+  show_col_types = FALSE
+) %>% 
+  mutate(across(
+    where(is.character),
+    ~ parse_guess(.x, na = c('', 'NA', 'null'))
+  ))
+teams  <- read_csv(
+  'data/teams_20252026.csv',
   col_types      = cols(.default = col_character()),
   na             = c('', 'NA', 'null'),
   show_col_types = FALSE
