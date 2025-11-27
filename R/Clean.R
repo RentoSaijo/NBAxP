@@ -123,5 +123,5 @@ twos$descriptor[is.na(twos$descriptor)]     <- 'regular'
 threes$descriptor[is.na(threes$descriptor)] <- 'regular'
 
 # Write to CSV.
-write_csv(twos, 'data/twos_20222023_20252026_claned.csv')
+write_csv(twos, 'data/twos_20222023_20252026_cleaned.csv')
 write_csv(threes, 'data/threes_20222023_20252026_cleaned.csv')
