@@ -254,4 +254,61 @@ rm(
 )
 
 # Group by team and region.
+shots       <- bind_rows(twos, threes) %>%
+  left_join(teams, by = 'teamId')
+all_regions <- tibble(region_id = 1:14)
+all_teams   <- teams %>% distinct(teamCode)
+region_team_grid <- expand_grid(
+  region_id = all_regions$region_id,
+  teamCode  = all_teams$teamCode
+)
+region_team_summary <- shots %>%
+  filter(!is.na(region_id), !is.na(teamCode)) %>%
+  group_by(region_id, teamCode) %>%
+  summarise(
+    Expected_Points     = sum(xP, na.rm = TRUE),
+    Jump_Shots          = sum(subType == 'Jump Shot', na.rm = TRUE),
+    Layups              = sum(subType == 'Layup',     na.rm = TRUE),
+    Dunks               = sum(subType == 'DUNK',      na.rm = TRUE),
+    Hooks               = sum(subType == 'Hook',      na.rm = TRUE),
+    From_Turnovers      = sum(isFromTurnOver,  na.rm = TRUE),
+    From_Second_Chances = sum(isSecondChance,  na.rm = TRUE),
+    From_Fast_Break     = sum(isFastBreak,     na.rm = TRUE),
+    Average_Distance    = mean(distance,       na.rm = TRUE),
+    .groups = 'drop'
+  )
+sum_cols <- c(
+  'Expected_Points', 'Jump_Shots', 'Layups', 'Dunks', 'Hooks',
+  'From_Turnovers', 'From_Second_Chances', 'From_Fast_Break'
+)
+region_team_full <- region_team_grid %>%
+  left_join(region_team_summary, by = c('region_id', 'teamCode')) %>%
+  mutate(
+    across(all_of(sum_cols), ~ replace_na(., 0))
+  )
+final <- region_team_full %>%
+  mutate(Region = region_id) %>%
+  select(
+    Region, teamCode,
+    Expected_Points, Jump_Shots, Layups, Dunks, Hooks,
+    From_Turnovers, From_Second_Chances, From_Fast_Break,
+    Average_Distance
+  ) %>%
+  pivot_wider(
+    id_cols    = Region,
+    names_from = teamCode,
+    values_from = c(
+      Expected_Points, Jump_Shots, Layups, Dunks, Hooks,
+      From_Turnovers, From_Second_Chances, From_Fast_Break,
+      Average_Distance
+    ),
+    names_glue = '{teamCode}_{.value}'
+  ) %>%
+  arrange(Region)
+rm(
+  all_regions, all_teams, region_team_full, region_team_grid, 
+  region_team_summary, shots, teams, twos, threes, sum_cols
+)
 
+# Write to CSV.
+write_csv(final, 'shots_region_team_20252026.csv')
