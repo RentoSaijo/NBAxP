@@ -113,3 +113,15 @@ threes <- calculate_geometry(threes) %>%
 # Turn booleans to numeric.
 twos   <- clean_shots(twos)
 threes <- clean_shots(threes)
+
+# Add sub-types.
+twos$subType[twos$subType == 'shot']     <- 'Jump Shot'
+threes$subType[threes$subType == 'shot'] <- 'Jump Shot'
+
+# Add descriptions.
+twos$descriptor[is.na(twos$descriptor)]     <- 'regular'
+threes$descriptor[is.na(threes$descriptor)] <- 'regular'
+
+# Write to CSV.
+write_csv(twos, 'data/twos_20222023_20252026_claned.csv')
+write_csv(threes, 'data/threes_20222023_20252026.csv_cleaned')
