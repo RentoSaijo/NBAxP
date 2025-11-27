@@ -26,6 +26,7 @@ get_season_game_ids <- function(year) {
   )
   unique(ids)
 }
+
 nba_headers <- list(
   'User-Agent'      = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
   'Accept'          = 'application/json, text/plain, */*',
@@ -67,10 +68,31 @@ get_pbp_one <- function(gid) {
   as_tibble(actions) |>
     mutate(gid = gid, .before = 1)
 }
+
 get_pbp_one_slow <- function(gid) {
   out <- get_pbp_one(gid)
   Sys.sleep(0.2)
   out
+}
+
+get_standings <- function(query = list()) {
+  req <- httr2::request(paste0(
+    'https://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2025/',
+    '00_standings.json'
+  ))
+  req <- do.call(httr2::req_url_query, c(list(req), query))
+  req <- httr2::req_retry(
+    req,
+    max_tries    = 3,
+    backoff      = function(attempt) 2 ^ (attempt - 1),
+    is_transient = function(resp) httr2::resp_status(resp) == 429
+  )
+  resp <- httr2::req_perform(req)
+  jsonlite::fromJSON(
+    httr2::resp_body_string(resp, encoding = 'UTF-8'),
+    simplifyVector = TRUE,
+    flatten        = TRUE
+  )
 }
 
 # Get all the games from the 2022-23 season to the 2025-26 season.
@@ -152,3 +174,23 @@ threes <- threes %>%
 # Write to CSV.
 write_csv(twos, 'data/twos_20222023_20252026.csv')
 write_csv(threes, 'data/threes_20222023_20252026.csv')
+
+# Scrape teams.
+standings <- get_standings()$sta$co %>% 
+  filter(!(val == 'Intl'))
+teams     <- standings$di %>%
+  map_dfr(function(divisions_df) {
+    map_dfr(divisions_df$t, function(team_df) {
+      as_tibble(team_df) %>%
+        select(tid, ta)
+    })
+  }) %>%
+  distinct(tid, ta) %>%
+  transmute(
+    teamId   = as.integer(tid),
+    teamCode = ta
+  )
+rm(standings, get_standings)
+
+# Write to CSV.
+write_csv(teams, 'data/teams_20252026.csv')
