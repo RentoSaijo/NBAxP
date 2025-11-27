@@ -80,5 +80,5 @@ threes_predicted <- threes_test %>%
 rm(twos_test, threes_test, twos_xP, threes_xP)
 
 # Write to CSV.
-write_csv(twos_predicted, 'data/twos_20222023_20252026_predicted.csv')
-write_csv(threes_predicted, 'data/threes_20222023_20252026_predicted.csv')
+write_csv(twos_predicted, 'data/twos_20252026_predicted.csv')
+write_csv(threes_predicted, 'data/threes_20252026_predicted.csv')
