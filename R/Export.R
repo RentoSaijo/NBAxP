@@ -311,4 +311,4 @@ rm(
 )
 
 # Write to CSV.
-write_csv(final, 'shots_region_team_20252026.csv')
+write_csv(final, 'data/shots_region_team_20252026.csv')
