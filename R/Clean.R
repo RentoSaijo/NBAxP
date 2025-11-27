@@ -1,4 +1,4 @@
-# Load libraries.
+# Load library.
 library(tidyverse)
 
 # Load data.
@@ -124,4 +124,4 @@ threes$descriptor[is.na(threes$descriptor)] <- 'regular'
 
 # Write to CSV.
 write_csv(twos, 'data/twos_20222023_20252026_claned.csv')
-write_csv(threes, 'data/threes_20222023_20252026.csv_cleaned')
+write_csv(threes, 'data/threes_20222023_20252026_cleaned.csv')
