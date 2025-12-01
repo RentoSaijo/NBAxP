@@ -8,64 +8,132 @@ let court_xScale, court_yScale, shot_xScale, shot_yScale, color;
 let Basket, Backboard, Outterbox, Innerbox, CornerThreeLeft, CornerThreeRight, OuterLine;
 let RestrictedArea, TopFreeThrow, BottomFreeThrow, ThreeLine, CenterOuter, CenterInner;
 
-// ----- initialize SVG, groups, scales, shapes, then draw court -----
-function initCourt() {
-    margin = { left: 20, right: 20, top: 20, bottom: 20 };
+// -------------------------------------------------------------------
+//   COURT OBJECT
+// -------------------------------------------------------------------
 
-    chartDiv = document.getElementById('court');
+class Court {
+    constructor(options = {}) {
+        // Allow some config if you ever want it
+        this.containerSelector = options.containerSelector || "#court";
+        this.width = options.width || 480;
+        this.height = this.width / 50 * 47;
 
-    court = d3.select(chartDiv)
-        .append('court')
-        .append('svg')
-        .attr('width', 480)
-        .attr('height', 480 / 50 * 47);
-
-    // keep this for other files that might use it
-    court.append('table');
-
-    heat_g  = court.append('g');
-    court_g = court.append('g');
-
-    title = d3.select(document.getElementById('caption')).append('text');
-
-    // slider containers (Slider.js expects these)
-    slider_axis = court.append('g')
-        .attr('class', 'slider-axis');
-    slider_rect = court.append('g')
-        .attr('class', 'slider-rect');
-    rect_entity = slider_rect.append('rect');
-
-    // scales (same domains as before)
-    court_xScale = d3.scaleLinear().domain([-25, 25]);
-    court_yScale = d3.scaleLinear().domain([-4, 43]);
-    shot_xScale  = d3.scaleLinear().domain([-250, 250]);
-    shot_yScale  = d3.scaleLinear().domain([-45, 420]);
-
-    color = d3.scaleSequential(d3.interpolateOrRd)
-        .domain([5e-6, 3e-2]); // Points per square pixel.
-
-    // shapes used by draw_court
-    Basket           = court_g.append('circle');
-    Backboard        = court_g.append('rect');
-    Outterbox        = court_g.append('rect');
-    Innerbox         = court_g.append('rect');
-    CornerThreeLeft  = court_g.append('rect');
-    CornerThreeRight = court_g.append('rect');
-    OuterLine        = court_g.append('rect');
-    RestrictedArea   = court_g.append('path');
-    TopFreeThrow     = court_g.append('path');
-    BottomFreeThrow  = court_g.append('path');
-    ThreeLine        = court_g.append('path');
-    CenterOuter      = court_g.append('path');
-    CenterInner      = court_g.append('path');
-
-    // draw the court
-    draw_court();
-
-    // initialize slider if Slider() is defined
-    if (typeof Slider === 'function') {
-        Slider();
+        this.init();
     }
+
+    init() {
+        margin = { left: 20, right: 20, top: 20, bottom: 20 };
+
+        // container div for the court
+        // (we still assume an element with id="court" exists)
+        chartDiv = document.querySelector(this.containerSelector) ||
+            document.getElementById('court');
+        this.chartDiv = chartDiv;
+
+        court = d3.select(chartDiv)
+            .append('court')
+            .append('svg')
+            .attr('width', this.width)
+            .attr('height', this.height);
+        this.svg = court;
+
+        // keep this for other files that might use it
+        court.append('table');
+
+        heat_g  = court.append('g');
+        court_g = court.append('g');
+        this.heat_g  = heat_g;
+        this.court_g = court_g;
+
+        title = d3.select(document.getElementById('caption')).append('text');
+        this.title = title;
+
+        // slider containers (Slider.js expects these)
+        slider_axis = court.append('g')
+            .attr('class', 'slider-axis');
+        slider_rect = court.append('g')
+            .attr('class', 'slider-rect');
+        rect_entity = slider_rect.append('rect');
+        this.slider_axis = slider_axis;
+        this.slider_rect = slider_rect;
+        this.rect_entity = rect_entity;
+
+        // scales (same domains as before)
+        court_xScale = d3.scaleLinear().domain([-25, 25]);
+        court_yScale = d3.scaleLinear().domain([-4, 43]);
+        shot_xScale  = d3.scaleLinear().domain([-250, 250]);
+        shot_yScale  = d3.scaleLinear().domain([-45, 420]);
+
+        this.court_xScale = court_xScale;
+        this.court_yScale = court_yScale;
+        this.shot_xScale  = shot_xScale;
+        this.shot_yScale  = shot_yScale;
+
+        color = d3.scaleSequential(d3.interpolateOrRd)
+            .domain([5e-6, 3e-2]); // Points per square pixel.
+        this.color = color;
+
+        // shapes used by draw_court
+        Basket           = court_g.append('circle');
+        Backboard        = court_g.append('rect');
+        Outterbox        = court_g.append('rect');
+        Innerbox         = court_g.append('rect');
+        CornerThreeLeft  = court_g.append('rect');
+        CornerThreeRight = court_g.append('rect');
+        OuterLine        = court_g.append('rect');
+        RestrictedArea   = court_g.append('path');
+        TopFreeThrow     = court_g.append('path');
+        BottomFreeThrow  = court_g.append('path');
+        ThreeLine        = court_g.append('path');
+        CenterOuter      = court_g.append('path');
+        CenterInner      = court_g.append('path');
+
+        this.Basket           = Basket;
+        this.Backboard        = Backboard;
+        this.Outterbox        = Outterbox;
+        this.Innerbox         = Innerbox;
+        this.CornerThreeLeft  = CornerThreeLeft;
+        this.CornerThreeRight = CornerThreeRight;
+        this.OuterLine        = OuterLine;
+        this.RestrictedArea   = RestrictedArea;
+        this.TopFreeThrow     = TopFreeThrow;
+        this.BottomFreeThrow  = BottomFreeThrow;
+        this.ThreeLine        = ThreeLine;
+        this.CenterOuter      = CenterOuter;
+        this.CenterInner      = CenterInner;
+
+        // draw the court
+        draw_court();
+
+        // initialize slider if Slider() is defined
+        if (typeof Slider === 'function') {
+            Slider();
+        }
+    }
+
+    // Example helper if you ever need to redraw the geometry
+    redraw() {
+        if (this.court_g) {
+            this.court_g.selectAll('*').remove();
+        }
+        draw_court();
+    }
+
+    getScales() {
+        return {
+            court_xScale,
+            court_yScale,
+            shot_xScale,
+            shot_yScale
+        };
+    }
+}
+
+// Old API name kept for compatibility: initCourt()
+// Now it just constructs the Court object.
+function initCourt() {
+    window.courtObject = new Court();
 }
 
 // run initCourt when DOM is ready (after all scripts have loaded)
@@ -725,6 +793,10 @@ function draw_court() {
         // top points on half-court line for center and left ray
         const halfCourtYpxOuter = court_yScale(halfCourtY);
 
+        // left sideline x in pixels
+        const sidelineLeftPxX = court_xScale(-25);
+
+        // top point on half court at center line
         const centerTopPxOuter = {
             x: basketCenter.x,       // x = 0
             y: halfCourtYpxOuter     // y at half court
