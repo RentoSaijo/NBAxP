@@ -19,26 +19,43 @@
     <title>Visualization Project</title>
 </head>
 <body>
+<body>
 <style>
     body {
         font-family: 'Open Sans', sans-serif;
+        margin: 0;
     }
 
+    /* main horizontal layout */
+    .layout {
+        display: flex;
+        height: 100vh;          /* full screen height */
+    }
+
+    /* left side: caption + stats */
+    .left-panel {
+        flex: 1;
+        padding: 16px;
+        box-sizing: border-box;
+    }
+
+    /* right side: court */
     #court {
-        position: fixed;
-        left: 0px;
-        right: 0px;
-        top: 50px;
-        bottom: 0px;
+        flex: 0 0 40%;          /* court takes 60% of width on the right */
+        position: relative;     /* let JS size the SVG inside */
     }
-
-
-
 </style>
 
-<h2 id='caption'></h2>
-<div id='court'></div>
-<div id='stats'></div>
+<div class="layout">
+    <div class="left-panel">
+        <h2 id='caption'></h2>
+        <div id='stats'></div>
+    </div>
+
+    <div id='court'></div>
+</div>
+</body>
+
 
 <!-- no inline <script> here anymore; Court.js handles setup -->
 

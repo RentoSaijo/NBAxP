@@ -1840,12 +1840,21 @@ function lineRectExitPoint(P0, P1, rect) {
                 document.getElementById('court');
             this.chartDiv = chartDiv;
 
+            // determine current container size
+            const divWidth  = chartDiv.clientWidth || this.width || 480;
+            const divHeight = divWidth * (47 / 50);
+
+            // store for reference
+            this.width  = divWidth;
+            this.height = divHeight;
+
             court = d3.select(chartDiv)
                 .append('court')
                 .append('svg')
-                .attr('width', this.width)
-                .attr('height', this.height);
+                .attr('width', divWidth)
+                .attr('height', divHeight);
             this.svg = court;
+
 
             // keep this for other files that might use it
             court.append('table');
@@ -1954,16 +1963,31 @@ function lineRectExitPoint(P0, P1, rect) {
 // -------------------------------------------------------------------
 
     function draw_court() {
-        const width = 480;
-        const height = width / 50 * 47;
-        court_g.attr("width", width)
+        // Use the current container width so it’s responsive
+        const width  = chartDiv.clientWidth || (window.courtObject && window.courtObject.width) || 480;
+        const height = width * (47 / 50);
+
+        // keep the current values on the Court instance (if available)
+        if (window.courtObject) {
+            window.courtObject.width  = width;
+            window.courtObject.height = height;
+        }
+
+        // resize the SVG itself
+        court
+            .attr("width", width)
             .attr("height", height);
 
-        const innerWidth = width - margin.left - margin.right;
-        const innerHeight = height - margin.top - margin.bottom;
+        court_g
+            .attr("width", width)
+            .attr("height", height);
+
+        const innerWidth  = width  - margin.left - margin.right;
+        const innerHeight = height - margin.top  - margin.bottom;
 
         court_xScale.range([margin.left, innerWidth]).nice();
         court_yScale.range([margin.top, innerHeight]).nice();
+
 
         // Track final sideline regions (11 and 12)
         let area11 = null;
@@ -3636,3 +3660,10 @@ function polygonAreaFeet(points) {
     }
     return Math.abs(sum) / 2;
 }
+
+// Redraw court whenever the window is resized
+window.addEventListener('resize', () => {
+    if (window.courtObject) {
+        window.courtObject.redraw();
+    }
+});
