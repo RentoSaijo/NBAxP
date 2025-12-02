@@ -105,14 +105,69 @@ class Court {
         this.CenterOuter      = CenterOuter;
         this.CenterInner      = CenterInner;
 
-        // draw the court
+        // after setting all this.* fields:
+        this.bindGlobals();
         draw_court();
+
 
         // initialize slider if Slider() is defined
         if (typeof Slider === 'function') {
             Slider();
         }
     }
+
+    // NEW: make this instance the "active" one for draw_court()
+    bindGlobals() {
+        chartDiv      = this.chartDiv;
+        court         = this.svg;
+        heat_g        = this.heat_g;
+        court_g       = this.court_g;
+        title         = this.title;
+
+        slider_axis   = this.slider_axis;
+        slider_rect   = this.slider_rect;
+        rect_entity   = this.rect_entity;
+
+        court_xScale  = this.court_xScale;
+        court_yScale  = this.court_yScale;
+        shot_xScale   = this.shot_xScale;
+        shot_yScale   = this.shot_yScale;
+        color         = this.color;
+
+        Basket           = this.Basket;
+        Backboard        = this.Backboard;
+        Outterbox        = this.Outterbox;
+        Innerbox         = this.Innerbox;
+        CornerThreeLeft  = this.CornerThreeLeft;
+        CornerThreeRight = this.CornerThreeRight;
+        OuterLine        = this.OuterLine;
+        RestrictedArea   = this.RestrictedArea;
+        TopFreeThrow     = this.TopFreeThrow;
+        BottomFreeThrow  = this.BottomFreeThrow;
+        ThreeLine        = this.ThreeLine;
+        CenterOuter      = this.CenterOuter;
+        CenterInner      = this.CenterInner;
+    }
+
+    redraw() {
+        // make THIS court the active global one
+        this.bindGlobals();
+
+        if (this.court_g) {
+            this.court_g.selectAll('*').remove();
+        }
+        draw_court();
+    }
+
+    getScales() {
+        return {
+            court_xScale,
+            court_yScale,
+            shot_xScale,
+            shot_yScale
+        };
+    }
+
 
     // Example helper if you ever need to redraw the geometry
     redraw() {
@@ -135,11 +190,14 @@ class Court {
 // Old API name kept for compatibility: initCourt()
 // Now it just constructs the Court object.
 function initCourt() {
-    window.courtObject = new Court();
-}
+    // first court in #court1
+    window.court1 = new Court({ containerSelector: "#court1" });
 
-// run initCourt when DOM is ready (after all scripts have loaded)
+    // second court in #court2
+    window.court2 = new Court({ containerSelector: "#court2" });
+}
 document.addEventListener('DOMContentLoaded', initCourt);
+
 
 
 // -------------------------------------------------------------------
@@ -3663,7 +3721,7 @@ function polygonAreaFeet(points) {
 
 // Redraw court whenever the window is resized
 window.addEventListener('resize', () => {
-    if (window.courtObject) {
-        window.courtObject.redraw();
-    }
+    if (window.court1) window.court1.redraw();
+    if (window.court2) window.court2.redraw();
 });
+

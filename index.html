@@ -19,41 +19,41 @@
     <title>Visualization Project</title>
 </head>
 <body>
-<body>
 <style>
     body {
         font-family: 'Open Sans', sans-serif;
         margin: 0;
+        background: #f7f7f7;       /* optional, just looks nicer */
     }
 
-    /* main horizontal layout */
-    .layout {
-        display: flex;
-        height: 100vh;          /* full screen height */
+    /* container for BOTH courts */
+    .courts-row {
+        display: flex;             /* put children in a row */
+        justify-content: center;   /* center the pair horizontally */
+        align-items: flex-start;   /* align to top; use center for vertical centering */
+        gap: 250px;                 /* space between the two courts */
+        max-width: 1100px;         /* total width of the two courts + gap */
+        margin: 40px auto;         /* center the row on the page, add top margin */
+        padding: 0 16px;           /* some side padding on small screens */
     }
 
-    /* left side: caption + stats */
-    .left-panel {
-        flex: 1;
-        padding: 16px;
-        box-sizing: border-box;
-    }
-
-    /* right side: court */
-    #court {
-        flex: 0 0 40%;          /* court takes 60% of width on the right */
-        position: relative;     /* let JS size the SVG inside */
+    .court-container {
+        flex: 0 0 45%; /* each court ~45% width of the row */
+        position: relative; /* so Court.js can size SVG inside */
+        height: 70vh; /* controls vertical size; tweak as you like */
     }
 </style>
 
-<div class="layout">
-    <div class="left-panel">
-        <h2 id='caption'></h2>
-        <div id='stats'></div>
-    </div>
 
-    <div id='court'></div>
+<div class="courts-row">
+    <div id="court1" class="court-container"></div>
+    <div id="court2" class="court-container"></div>
 </div>
+
+<!-- no inline <script> here anymore; Court.js handles setup -->
+</body>
+
+
 </body>
 
 
