@@ -201,10 +201,10 @@ point_poly_dist <- function(x, y, poly) {
 }
 
 assign_region_from_Rcoords <- function(
-    x_R, 
-    y_R,
-    regions = court_regions,
-    fallback_radius = 3
+  x_R, 
+  y_R,
+  regions = court_regions,
+  fallback_radius = 3
 ) {
   if (is.na(x_R) || is.na(y_R)) return(NA_integer_)
   x_JS <- y_R
@@ -291,24 +291,50 @@ final <- region_team_full %>%
   select(
     Region, teamCode,
     Expected_Points, Jump_Shots, Layups, Dunks, Hooks,
-    From_Turnovers, From_Second_Chances, From_Fast_Break,
-    Average_Distance
+    From_Turnovers, From_Second_Chances, From_Fast_Break
   ) %>%
   pivot_wider(
     id_cols    = Region,
     names_from = teamCode,
     values_from = c(
       Expected_Points, Jump_Shots, Layups, Dunks, Hooks,
-      From_Turnovers, From_Second_Chances, From_Fast_Break,
-      Average_Distance
+      From_Turnovers, From_Second_Chances, From_Fast_Break
     ),
     names_glue = '{teamCode}_{.value}'
   ) %>%
   arrange(Region)
 rm(
   all_regions, all_teams, region_team_full, region_team_grid, 
-  region_team_summary, shots, teams, twos, threes, sum_cols
+  region_team_summary, shots, threes, sum_cols
 )
 
+# Count number of games per team.
+games_played <- twos %>%
+  distinct(teamId, gid) %>%
+  count(teamId, name = 'Games_Played')
+teams <- teams %>%
+  left_join(games_played, by = 'teamId') %>%
+  mutate(Games_Played = replace_na(Games_Played, 0L))
+rm(games_played, twos)
+
+# Calculate pace for each statistic.
+team_games <- teams %>%
+  select(teamCode, Games_Played)
+final_pace <- final %>%
+  select(Region)
+for (i in seq_len(nrow(team_games))) {
+  tc <- team_games$teamCode[i]
+  gp <- team_games$Games_Played[i]
+  cols <- names(final)[str_starts(names(final), paste0(tc, '_'))]
+  if (!length(cols)) next
+  new_cols <- paste0(cols, '_Pace')
+  if (gp > 0) {
+    final_pace[new_cols] <- final[cols] / gp * 82
+  } else {
+    final_pace[new_cols] <- NA_real_
+  }
+}
+rm(team_games, teams, cols, gp, i, new_cols, tc)
+
 # Write to CSV.
-write_csv(final, 'data/shots_region_team_20252026.csv')
+write_csv(final_pace, 'data/shots_region_team_pace_20252026.csv')
