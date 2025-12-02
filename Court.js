@@ -79,8 +79,10 @@ class Court {
         Backboard        = court_g.append('rect');
         Outterbox        = court_g.append('rect');
         Innerbox         = court_g.append('rect');
-        CornerThreeLeft  = court_g.append('rect');
-        CornerThreeRight = court_g.append('rect');
+
+        CornerThreeLeft  = court_g.append('line');
+        CornerThreeRight = court_g.append('line');
+
         OuterLine        = court_g.append('rect');
         RestrictedArea   = court_g.append('path');
         TopFreeThrow     = court_g.append('path');
@@ -194,24 +196,25 @@ function draw_court() {
     //     .style('fill', 'none')
     //     .style('stroke', 'black');
 
-    // Corner 3s
+    // Corner 3s as true lines
     CornerThreeLeft
-        .attr('x', court_xScale(-22))
-        .attr('y', court_yScale(-4))
-        .attr('width', 1)
-        .attr('height', court_yScale(10) - court_yScale(-4))
-        .style('fill', 'none')
+        .attr('x1', court_xScale(-22))
+        .attr('y1', court_yScale(-4))
+        .attr('x2', court_xScale(-22))
+        .attr('y2', court_yScale(10))
         .style('stroke', 'black')
-        .style('stroke-width', 1);
+        .style('stroke-width', 1)
+        .style('fill', 'none');   // harmless, but fine to leave
 
     CornerThreeRight
-        .attr('x', court_xScale(22))
-        .attr('y', court_yScale(-4))
-        .attr('width', 1)
-        .attr('height', court_yScale(10) - court_yScale(-4))
-        .style('fill', 'none')
+        .attr('x1', court_xScale(22))
+        .attr('y1', court_yScale(-4))
+        .attr('x2', court_xScale(22))
+        .attr('y2', court_yScale(10))
         .style('stroke', 'black')
-        .style('stroke-width', 1);
+        .style('stroke-width', 1)
+        .style('fill', 'none');
+
 
     // Outer boundary
     OuterLine
