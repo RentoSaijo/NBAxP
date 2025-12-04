@@ -9,8 +9,11 @@
 - [X] Draw regions geometrically
 - [X] Visualize 2 courts on screen
 - [X] Add team selection dropdowns
-- [ ] Fix region on resize
+- [X] Fix region on resize
 - [ ] Color regions by xP
 - [ ] Add hover interaction
 - [ ] Map data to infobox
 - [ ] Decorate and standardize
+
+## Expected Points (xP) Model
+
