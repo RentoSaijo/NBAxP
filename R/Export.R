@@ -336,5 +336,8 @@ for (i in seq_len(nrow(team_games))) {
 }
 rm(team_games, teams, cols, gp, i, new_cols, tc)
 
+# Round all numerics.
+final_pace_rounded <- round(final_pace)
+
 # Write to CSV.
-write_csv(final_pace, 'data/shots_region_team_pace_20252026.csv')
+write_csv(final_pace_rounded, 'data/shots_region_team_pace_20252026.csv')
