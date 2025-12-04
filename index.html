@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <!-- Bootstrap 5 -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <!-- Icons + Fonts -->
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+            href='https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700'
+            rel='stylesheet'>
+
+    <!-- D3 + helpers -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.min.js'></script>
+    <script src="https://d3js.org/d3-contour.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+    <!-- Your JS -->
+    <script src='regions.js' defer></script>
+    <script src='Court.js' defer></script>
+    <script src="teams.js" defer></script>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+    <title>NBA Shot Visualization — Team Comparison</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .column-container {
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        #court-left, #court-right {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ====================== NAVBAR ====================== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#">NBA Visualizer</a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto">
+
+                <!-- LEFT TEAM -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       id="teamDropdownLeft"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Team A
+                    </a>
+                    <ul class="dropdown-menu" id="teamMenuLeft">
+                        <!-- JS inserts team options -->
+                    </ul>
+                </li>
+
+                <!-- RIGHT TEAM -->
+                <li class="nav-item dropdown ms-3">
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       id="teamDropdownRight"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Team B
+                    </a>
+                    <ul class="dropdown-menu" id="teamMenuRight">
+                        <!-- JS inserts team options -->
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- ====================== 3-COLUMN LAYOUT ====================== -->
+<div class="container-fluid" id="main-layout">
+    <div class="row h-100">
+
+        <!-- LEFT COURT -->
+        <div class="col-4 border-end column-container d-flex justify-content-center align-items-start">
+            <div id="court1" class="court-container">
+            </div>
+        </div>
+
+        <!-- MIDDLE STATS COLUMN -->
+        <div class="col-4 border-start border-end">
+            <div id="stats-column">
+                <h5 class="mt-2 fw-bold">Statistics</h5>
+                <ul id="stats-list" class="list-group mb-4">
+                </ul>
+            </div>
+        </div>
+
+        <!-- RIGHT COURT -->
+        <div class="col-4 column-container d-flex justify-content-center align-items-start">
+            <div id="court2" class="court-container">
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
