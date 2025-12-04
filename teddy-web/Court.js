@@ -370,7 +370,7 @@ function draw_court() {
             .attr("class", "coral-chartreuse-region")
             .attr("points", coralChartreusePx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#832f0b")   // choose any color you like
-            .attr("opacity", 0.6)
+            .attr("opacity", 1)
             .attr("stroke", "none");
 
         // compute area in feet^2 and log it
@@ -428,7 +428,7 @@ function draw_court() {
             .attr("class", "aqua-cyan-region")
             .attr("points", aquaCyanPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#ff8000")   // pick any color you like
-            .attr("opacity", 0.6)
+            .attr("opacity", 1)
             .attr("stroke", "none");
 
         // compute area in feet^2 and log it
@@ -493,7 +493,7 @@ function draw_court() {
             .attr("class", "orchid-top-paint-region")
             .attr("points", orchidPaintPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#8821d5")   // choose any color you like
-            .attr("opacity", 0.6)
+            .attr("opacity", 1)
             .attr("stroke", "none");
 
         // compute area in feet^2 and log it
@@ -534,7 +534,7 @@ function draw_court() {
             .attr("class", "sienna-bottom-paint-region")
             .attr("points", siennaBottomPaintPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#a0522d")   // sienna-like color; tweak if you want
-            .attr("opacity", 0.6)
+            .attr("opacity", 1)
             .attr("stroke", "none");
 
         // compute area in feet^2 and log it
@@ -704,7 +704,7 @@ function draw_court() {
             .attr("class", "orange-red-center-region")
             .attr("points", wedgePtsPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#d5974f")   // choose any color you like
-            .attr("opacity", 0.6)
+            .attr("opacity", 1)
             .attr("stroke", "none");
 
         // ---- compute area in feet^2 and log it ----
@@ -773,7 +773,7 @@ function draw_court() {
             .attr("class", "orange-black-center-region-right")
             .attr("points", wedgePtsPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#3f8dcd")   // light blue; change if you want
-            .attr("opacity", 0.6)
+            .attr("opacity", 1)
             .attr("stroke", "none");
 
         // ---- compute area in feet^2 and log it ----
@@ -912,7 +912,7 @@ function draw_court() {
             .attr("class", "orange-red-outer-region")
             .attr("points", wedgeOuterPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#3b8c25")    // pick any color you like
-            .attr("opacity", 0.6)
+            .attr("opacity", 1)
             .attr("stroke", "none");
 
         // ---- compute area in feet^2 and log it ----
@@ -997,7 +997,7 @@ function draw_court() {
             .attr("class", "yellow-orange-outer-region")
             .attr("points", wedgeOuterPxRight.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#e412e4")   // nice yellow; tweak if you want
-            .attr("opacity", 0.6)
+            .attr("opacity", 1)
             .attr("stroke", "none");
 
         // ---- compute area in feet^2 and log it ----
@@ -1198,7 +1198,7 @@ function draw_court() {
             .attr("class", "maroon-magenta-region")
             .attr("points", maroonMagentaPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#ff0000")   // pick any color you like
-            .attr("opacity", 0.6)
+            .attr("opacity", 1)
             .attr("stroke", "none");
 
         // ---- compute area in feet^2 and log it ----
@@ -1263,7 +1263,7 @@ function draw_court() {
             .attr("class", "lime-fuchsia-region")
             .attr("points", limeFuchsiaPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#80ffc0")   // pick any color you like
-            .attr("opacity", 0.6)
+            .attr("opacity", 1)
             .attr("stroke", "none");
 
         // ---- compute area in feet^2 and log it ----
@@ -1475,7 +1475,7 @@ function draw_court() {
                 .attr("class", "region-11-combined")
                 .attr("points", combinedLeftPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#b38cff")   // any single uniform color you like
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
 // Compute area in feet^2 and log it
@@ -1577,7 +1577,7 @@ function draw_court() {
                 .attr("class", "region-12-combined")
                 .attr("points", combinedRightPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#b38cff")
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // Compute area in feet^2 and log it
@@ -1649,7 +1649,7 @@ function draw_court() {
             .attr("class", "orange-red-region")
             .attr("points", wedgePts.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#ffcc80")   // pick any color you like
-            .attr("opacity", 0.55)     // semi-transparent
+            .attr("opacity", 1)     // semi-transparent
             .attr("stroke", "none");
     }
 
@@ -1700,7 +1700,7 @@ function draw_court() {
             .attr("class", "orange-red-region-right")
             .attr("points", wedgePts.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#cce5ff")   // ⬅ different color; tweak as you like
-            .attr("opacity", 0.55)
+            .attr("opacity", 1)
             .attr("stroke", "none");
     }
 
@@ -2018,15 +2018,8 @@ function lineRectExitPoint(P0, P1, rect) {
 
         }
 
-        // Example helper if you ever need to redraw the geometry
-        redraw() {
-            this.bindGlobals();   // make THIS court active
 
-            if (this.court_g) {
-                this.court_g.selectAll('*').remove();
-            }
-            draw_court();
-        }
+
 
 
         getScales() {
@@ -2253,7 +2246,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "coral-chartreuse-region")
                 .attr("points", coralChartreusePx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#832f0b")   // choose any color you like
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // compute area in feet^2 and log it
@@ -2311,7 +2304,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "aqua-cyan-region")
                 .attr("points", aquaCyanPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#ff8000")   // pick any color you like
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // compute area in feet^2 and log it
@@ -2376,7 +2369,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "orchid-top-paint-region")
                 .attr("points", orchidPaintPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#8821d5")   // choose any color you like
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // compute area in feet^2 and log it
@@ -2417,7 +2410,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "sienna-bottom-paint-region")
                 .attr("points", siennaBottomPaintPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#a0522d")   // sienna-like color; tweak if you want
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // compute area in feet^2 and log it
@@ -2587,7 +2580,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "orange-red-center-region")
                 .attr("points", wedgePtsPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#d5974f")   // choose any color you like
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // ---- compute area in feet^2 and log it ----
@@ -2656,7 +2649,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "orange-black-center-region-right")
                 .attr("points", wedgePtsPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#3f8dcd")   // light blue; change if you want
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // ---- compute area in feet^2 and log it ----
@@ -2795,7 +2788,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "orange-red-outer-region")
                 .attr("points", wedgeOuterPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#3b8c25")    // pick any color you like
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // ---- compute area in feet^2 and log it ----
@@ -2880,7 +2873,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "yellow-orange-outer-region")
                 .attr("points", wedgeOuterPxRight.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#e412e4")   // nice yellow; tweak if you want
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // ---- compute area in feet^2 and log it ----
@@ -3081,7 +3074,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "maroon-magenta-region")
                 .attr("points", maroonMagentaPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#ff0000")   // pick any color you like
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // ---- compute area in feet^2 and log it ----
@@ -3146,7 +3139,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "lime-fuchsia-region")
                 .attr("points", limeFuchsiaPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#80ffc0")   // pick any color you like
-                .attr("opacity", 0.6)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
 
             // ---- compute area in feet^2 and log it ----
@@ -3358,7 +3351,7 @@ function lineRectExitPoint(P0, P1, rect) {
                     .attr("class", "region-11-combined")
                     .attr("points", combinedLeftPx.map(([x, y]) => `${x},${y}`).join(" "))
                     .attr("fill", "#b38cff")   // any single uniform color you like
-                    .attr("opacity", 0.6)
+                    .attr("opacity", 1)
                     .attr("stroke", "none");
 
 // Compute area in feet^2 and log it
@@ -3460,7 +3453,7 @@ function lineRectExitPoint(P0, P1, rect) {
                     .attr("class", "region-12-combined")
                     .attr("points", combinedRightPx.map(([x, y]) => `${x},${y}`).join(" "))
                     .attr("fill", "#b38cff")
-                    .attr("opacity", 0.6)
+                    .attr("opacity", 1)
                     .attr("stroke", "none");
 
                 // Compute area in feet^2 and log it
@@ -3530,7 +3523,7 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "orange-red-region")
                 .attr("points", wedgePts.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#ffcc80")   // pick any color you like
-                .attr("opacity", 0.55)     // semi-transparent
+                .attr("opacity", 1)     // semi-transparent
                 .attr("stroke", "none");
         }
 
@@ -3581,11 +3574,17 @@ function lineRectExitPoint(P0, P1, rect) {
                 .attr("class", "orange-red-region-right")
                 .attr("points", wedgePts.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#cce5ff")   // ⬅ different color; tweak as you like
-                .attr("opacity", 0.55)
+                .attr("opacity", 1)
                 .attr("stroke", "none");
         }
 
+        function redraw() {
+            // ✅ CLEAR OLD COURT FIRST
+            court_g.selectAll("*").remove();
 
+            // ✅ THEN redraw everything fresh
+            draw_court();
+        }
 
         // ----- REGION LABELS ONLY (no COURT_REGIONS polygons) -----
 // We still use COURT_REGIONS from regions.js just for label positions & ids.
