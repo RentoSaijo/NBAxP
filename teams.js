@@ -1,4 +1,6 @@
-// List of NBA teams
+// ===============================
+// NBA TEAMS LIST
+// ===============================
 const teams = [
     { id: "ATL", name: "Atlanta Hawks" },
     { id: "BOS", name: "Boston Celtics" },
@@ -22,7 +24,7 @@ const teams = [
     { id: "NYK", name: "New York Knicks" },
     { id: "OKC", name: "Oklahoma City Thunder" },
     { id: "ORL", name: "Orlando Magic" },
-    { id: "PHI", name: "Philidelphia 76ers" },
+    { id: "PHI", name: "Philadelphia 76ers" },
     { id: "PHX", name: "Phoenix Suns" },
     { id: "POR", name: "Portland Trail Blazers" },
     { id: "SAC", name: "Sacramento Kings" },
@@ -32,76 +34,47 @@ const teams = [
     { id: "WAS", name: "Washington Wizards" },
 ];
 
-// Store references to the courts
-let leftCourt, rightCourt;
+const TEAM_COLORS = {
+    ATL: "#E03A3E",
+    BOS: "#007A33",
+    BKN: "#000000",
+    CHA: "#1D1160",
+    CHI: "#CE1141",
+    CLE: "#860038",
+    DAL: "#00538C",
+    DEN: "#0E2240",
+    DET: "#C8102E",
+    GSW: "#1D428A",
+    HOU: "#CE1141",
+    IND: "#002D62",
+    LAC: "#C8102E",
+    LAL: "#552583",
+    MEM: "#5D76A9",
+    MIA: "#98002E",
+    MIL: "#00471B",
+    MIN: "#0C2340",
+    NOP: "#0C2340",
+    NYK: "#006BB6",
+    OKC: "#007AC1",
+    ORL: "#0077C0",
+    PHI: "#006BB6",
+    PHX: "#1D1160",
+    POR: "#E03A3E",
+    SAC: "#5A2D81",
+    SAS: "#C4CED4",
+    TOR: "#CE1141",
+    UTA: "#002B5C",
+    WAS: "#002B5C"
+};
 
-// Populate both dropdown menus
-function populateDropdowns() {
-    const menuLeft = document.getElementById("teamMenuLeft");
-    const menuRight = document.getElementById("teamMenuRight");
+window.TEAM_COLORS = TEAM_COLORS;
 
-    teams.forEach(team => {
-        // Left dropdown
-        const liLeft = document.createElement("li");
-        liLeft.innerHTML = `<a class="dropdown-item" href="#" data-id="${team.id}">${team.name}</a>`;
-        menuLeft.appendChild(liLeft);
-
-        // Right dropdown
-        const liRight = document.createElement("li");
-        liRight.innerHTML = `<a class="dropdown-item" href="#" data-id="${team.id}">${team.name}</a>`;
-        menuRight.appendChild(liRight);
-    });
-}
-
-// Update the court for a given div and team
-function updateCourt(containerId, teamId) {
-    // Remove existing SVG
-    const container = document.getElementById(containerId);
-    container.innerHTML = "";
-
-    // Call your Court.js init function with the container id
-    if (typeof initCourtForContainer === "function") {
-        initCourtForContainer(containerId, teamId);
-    }
-
-    // Optionally, you can also update heatmaps / stats here per team
-}
-
-// Wire up dropdown selections
-function setupDropdownHandlers() {
-    // LEFT TEAM
-    document.getElementById("teamMenuLeft").addEventListener("click", (e) => {
-        if (e.target.tagName === "A") {
-            const teamId = e.target.getAttribute("data-id");
-            document.getElementById("teamDropdownLeft").textContent = e.target.textContent;
-            updateCourt("court-left", teamId);
-        }
-    });
-
-    // RIGHT TEAM
-    document.getElementById("teamMenuRight").addEventListener("click", (e) => {
-        if (e.target.tagName === "A") {
-            const teamId = e.target.getAttribute("data-id");
-            document.getElementById("teamDropdownRight").textContent = e.target.textContent;
-            updateCourt("court-right", teamId);
-        }
-    });
-}
-
-// Initialize both dropdowns and courts on DOM ready
-document.addEventListener("DOMContentLoaded", () => {
-    populateDropdowns();
-    setupDropdownHandlers();
-
-    // Optional: initialize with first two teams
-    if (teams.length >= 2) {
-        updateCourt("court-left", teams[0].id);
-        document.getElementById("teamDropdownLeft").textContent = teams[0].name;
-
-        updateCourt("court-right", teams[1].id);
-        document.getElementById("teamDropdownRight").textContent = teams[1].name;
-    }
-});
+// ===============================
+// GLOBAL STATE
+// ===============================
+let csvData = [];
+let selectedLeftTeam = null;
+let selectedRightTeam = null;
 
 const allStats = [
     "Expected Points Pace",
@@ -110,12 +83,37 @@ const allStats = [
     "Dunks Pace",
     "Hooks Pace",
     "From Turnovers Pace",
-    "Second Chance Pace",
-    "Fast Break Pace",
+    "From Second Chances Pace",
+    "From Fast Break Pace",
 ];
 
-window.addEventListener("DOMContentLoaded", () => {
+// ===============================
+// POPULATE DROPDOWN MENUS
+// ===============================
+function populateDropdowns() {
+    const menuLeft = document.getElementById("teamMenuLeft");
+    const menuRight = document.getElementById("teamMenuRight");
+
+    menuLeft.innerHTML = "";
+    menuRight.innerHTML = "";
+
+    teams.forEach(team => {
+        const liLeft = document.createElement("li");
+        liLeft.innerHTML = `<a class="dropdown-item" href="#" data-id="${team.id}">${team.name}</a>`;
+        menuLeft.appendChild(liLeft);
+
+        const liRight = document.createElement("li");
+        liRight.innerHTML = `<a class="dropdown-item" href="#" data-id="${team.id}">${team.name}</a>`;
+        menuRight.appendChild(liRight);
+    });
+}
+
+// ===============================
+// BUILD STATS LIST
+// ===============================
+function buildStatsList() {
     const statsList = document.getElementById("stats-list");
+    statsList.innerHTML = "";
 
     allStats.forEach(stat => {
         const li = document.createElement("li");
@@ -123,21 +121,137 @@ window.addEventListener("DOMContentLoaded", () => {
 
         li.innerHTML = `
             <span>${stat}</span>
-            <span id="value-${stat.replaceAll(' ', '-')}" class="fw-bold text-primary">—</span>
+            <span id="value-left-${stat.replace(/ /g, '-')}" class="fw-bold text-primary">—</span>
+            <span id="value-right-${stat.replace(/ /g, '-')}" class="fw-bold text-danger">—</span>
         `;
-
         statsList.appendChild(li);
     });
-});
+}
 
-d3.csv("stats.csv").then(data => {
-    const teamData = data.find(row => row.Team === selectedTeam);
+// ===============================
+// UPDATE COURT (compatible with Court.js)
+// ===============================
+function updateCourt(containerId, teamId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Nested div that Court.js expects
+    const courtDiv = container.querySelector("div[id^='court']");
+    if (!courtDiv) return;
+
+    courtDiv.innerHTML = ""; // clear previous content
+
+    if (typeof renderCourtInto === "function") {
+        renderCourtInto(courtDiv, teamId).then(() => {
+            if (typeof initCourtForContainer === "function") {
+                initCourtForContainer(containerId);
+            }
+        });
+    } else if (typeof initCourtForContainer === "function") {
+        initCourtForContainer(containerId);
+    }
+}
+
+// ===============================
+// UPDATE TEAM LOGO
+// ===============================
+function updateTeamLogo(side, teamId) {
+    const img = document.getElementById(side === "left" ? "logo-left" : "logo-right");
+    if (!img) return;
+
+    if (!teamId) {
+        img.style.display = "none";
+        return;
+    }
+
+    img.onload = () => { img.style.display = "block"; };
+    img.onerror = () => { img.style.display = "none"; };
+    img.src = `logos/${teamId}.webp`;
+}
+
+// ===============================
+// LOAD CSV AND UPDATE STATS
+// ===============================
+function loadTeamStats() {
+    if (!csvData.length) {
+        d3.csv("data/shots_region_team_pace_20252026.csv").then(data => {
+            csvData = data;
+            loadTeamStats(); // retry after loading
+        }).catch(err => console.error("Failed to load CSV:", err));
+        return;
+    }
+
+    function getTeamRow(teamId) {
+        if (!teamId) return null;
+        return csvData.find(row => Object.keys(row).some(col => col.startsWith(teamId + "_")));
+    }
+
+    const leftRow = getTeamRow(selectedLeftTeam);
+    const rightRow = getTeamRow(selectedRightTeam);
 
     allStats.forEach(stat => {
-        const key = stat.replaceAll(" ", "-");
-        const element = document.getElementById(`value-${key}`);
+        const statId = stat.replace(/ /g, '-');
+        const leftKey = selectedLeftTeam ? `${selectedLeftTeam}_${stat.replace(/ /g, '_')}` : null;
+        const rightKey = selectedRightTeam ? `${selectedRightTeam}_${stat.replace(/ /g, '_')}` : null;
 
-        element.textContent = teamData[stat] || "N/A";
+        const leftElem = document.getElementById(`value-left-${statId}`);
+        const rightElem = document.getElementById(`value-right-${statId}`);
+
+        if (leftElem) leftElem.textContent = leftRow && leftKey in leftRow ? leftRow[leftKey] : "N/A";
+        if (rightElem) rightElem.textContent = rightRow && rightKey in rightRow ? rightRow[rightKey] : "N/A";
     });
-});
+}
 
+// ===============================
+// DROPDOWN HANDLERS
+// ===============================
+function setupDropdownHandlers() {
+    document.getElementById("teamMenuLeft").addEventListener("click", e => {
+        if (e.target.tagName !== "A") return;
+
+        selectedLeftTeam = e.target.dataset.id;
+        document.getElementById("teamDropdownLeft").textContent = e.target.textContent;
+
+        updateCourt("court1", selectedLeftTeam);
+        updateTeamLogo("left", selectedLeftTeam);
+        loadTeamStats();
+    });
+
+    document.getElementById("teamMenuRight").addEventListener("click", e => {
+        if (e.target.tagName !== "A") return;
+
+        selectedRightTeam = e.target.dataset.id;
+        document.getElementById("teamDropdownRight").textContent = e.target.textContent;
+
+        updateCourt("court2", selectedRightTeam);
+        updateTeamLogo("right", selectedRightTeam);
+        loadTeamStats();
+    });
+}
+
+
+// ===============================
+// INITIALIZATION
+// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+    populateDropdowns();
+    buildStatsList();
+    setupDropdownHandlers();
+
+    // Initialize first two teams automatically
+    if (teams.length >= 2) {
+        selectedLeftTeam = teams[0].id;
+        selectedRightTeam = teams[1].id;
+
+        document.getElementById("teamDropdownLeft").textContent = teams[0].name;
+        document.getElementById("teamDropdownRight").textContent = teams[1].name;
+
+        updateCourt("court1", selectedLeftTeam);
+        updateCourt("court2", selectedRightTeam);
+
+        updateTeamLogo("left", selectedLeftTeam);
+        updateTeamLogo("right", selectedRightTeam);
+
+        loadTeamStats();
+    }
+});
