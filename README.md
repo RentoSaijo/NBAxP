@@ -132,7 +132,7 @@ The 2PT model shows a strong and intuitive distance penalty, indicating that eve
 
 The 3PT model again shows a clear distance penalty and then adjusts make probability based on how the attempt was taken. Many descriptors associated with self-created, off-balance, or heavily pressured threes (pullups, step-backs, turnarounds, fadeaways) tend to reduce make probability relative to the reference descriptor, while fast-break threes are associated with higher make probability, consistent with transition shots often being cleaner and less contested.
 
-### Model Predictions
+### 5. Model Predictions
 
 Once both logistic regressions are fit on the training seasons, the 2025–26 test-season shots receive **shot-level predictions**. For each two-point attempt, the model produces \(P(\text{made}_2)\) and the pipeline stores \(xP_2 = 2\cdot P(\text{made}_2)\); for each three-point attempt, it stores \(xP_3 = 3\cdot P(\text{made}_3)\). These predicted shot-level xP values are the building blocks for every visualization element on the site, because they allow the app to compare teams and regions using expected scoring value rather than makes/misses.
 
