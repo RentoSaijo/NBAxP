@@ -31,50 +31,59 @@ const teams = [
     { id: "SAS", name: "San Antonio Spurs" },
     { id: "TOR", name: "Toronto Raptors" },
     { id: "UTA", name: "Utah Jazz" },
-    { id: "WAS", name: "Washington Wizards" },
+    { id: "WAS", name: "Washington Wizards" }
 ];
 
+// ===============================
+// TEAM COLORS
+// ===============================
 const TEAM_COLORS = {
     ATL: "#E03A3E",
     BOS: "#007A33",
-    BKN: "#000000",
-    CHA: "#1D1160",
+    BKN: "#2B2B2B",
+    CHA: "#2C1A7A",
     CHI: "#CE1141",
     CLE: "#860038",
     DAL: "#00538C",
-    DEN: "#0E2240",
+    DEN: "#1B3A6F",
     DET: "#C8102E",
     GSW: "#1D428A",
     HOU: "#CE1141",
     IND: "#002D62",
     LAC: "#C8102E",
     LAL: "#552583",
-    MEM: "#5D76A9",
+    MEM: "#4A6FA5",
     MIA: "#98002E",
     MIL: "#00471B",
-    MIN: "#0C2340",
-    NOP: "#0C2340",
-    NYK: "#006BB6",
+    MIN: "#1E3A5F",
+    NOP: "#002B5C",
+    NYK: "#F58426",
     OKC: "#007AC1",
     ORL: "#0077C0",
     PHI: "#006BB6",
-    PHX: "#1D1160",
+    PHX: "#5A2D81",
     POR: "#E03A3E",
     SAC: "#5A2D81",
-    SAS: "#C4CED4",
+    SAS: "#8A8D8F",
     TOR: "#CE1141",
-    UTA: "#002B5C",
+    UTA: "#4B6CB7",
     WAS: "#002B5C"
 };
 
 window.TEAM_COLORS = TEAM_COLORS;
 
 // ===============================
-// GLOBAL STATE
+// GLOBAL SELECTED TEAM STATE
+// ===============================
+window.SELECTED_TEAMS = {
+    left: { id: null, color: null },
+    right: { id: null, color: null }
+};
+
+// ===============================
+// CSV + STATS CONFIG
 // ===============================
 let csvData = [];
-let selectedLeftTeam = null;
-let selectedRightTeam = null;
 
 const allStats = [
     "Expected Points Pace",
@@ -84,123 +93,250 @@ const allStats = [
     "Hooks Pace",
     "From Turnovers Pace",
     "From Second Chances Pace",
-    "From Fast Break Pace",
+    "From Fast Break Pace"
 ];
 
 // ===============================
-// POPULATE DROPDOWN MENUS
+// DROPDOWN POPULATION
 // ===============================
 function populateDropdowns() {
-    const menuLeft = document.getElementById("teamMenuLeft");
-    const menuRight = document.getElementById("teamMenuRight");
+    const leftMenu = document.getElementById("teamMenuLeft");
+    const rightMenu = document.getElementById("teamMenuRight");
 
-    menuLeft.innerHTML = "";
-    menuRight.innerHTML = "";
+    leftMenu.innerHTML = "";
+    rightMenu.innerHTML = "";
 
     teams.forEach(team => {
-        const liLeft = document.createElement("li");
-        liLeft.innerHTML = `<a class="dropdown-item" href="#" data-id="${team.id}">${team.name}</a>`;
-        menuLeft.appendChild(liLeft);
-
-        const liRight = document.createElement("li");
-        liRight.innerHTML = `<a class="dropdown-item" href="#" data-id="${team.id}">${team.name}</a>`;
-        menuRight.appendChild(liRight);
+        leftMenu.insertAdjacentHTML(
+            "beforeend",
+            `<li><a class="dropdown-item" href="#" data-id="${team.id}">${team.name}</a></li>`
+        );
+        rightMenu.insertAdjacentHTML(
+            "beforeend",
+            `<li><a class="dropdown-item" href="#" data-id="${team.id}">${team.name}</a></li>`
+        );
     });
 }
 
 // ===============================
-// BUILD STATS LIST
+// STATS LIST UI
 // ===============================
 function buildStatsList() {
-    const statsList = document.getElementById("stats-list");
-    statsList.innerHTML = "";
+    const list = document.getElementById("stats-list");
+    list.innerHTML = "";
 
     allStats.forEach(stat => {
-        const li = document.createElement("li");
-        li.className = "list-group-item d-flex justify-content-between";
-
-        li.innerHTML = `
-            <span>${stat}</span>
-            <span id="value-left-${stat.replace(/ /g, '-')}" class="fw-bold text-primary">—</span>
-            <span id="value-right-${stat.replace(/ /g, '-')}" class="fw-bold text-danger">—</span>
-        `;
-        statsList.appendChild(li);
+        const key = stat.replace(/ /g, "-");
+        list.insertAdjacentHTML(
+            "beforeend",
+            `
+            <li class="list-group-item d-flex justify-content-between">
+                <span>${stat}</span>
+                <span id="value-left-${key}" class="fw-bold text-primary">—</span>
+                <span id="value-right-${key}" class="fw-bold text-danger">—</span>
+            </li>
+            `
+        );
     });
 }
 
 // ===============================
-// UPDATE COURT (compatible with Court.js)
+// COURT UPDATE
 // ===============================
 function updateCourt(containerId, teamId) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // Nested div that Court.js expects
     const courtDiv = container.querySelector("div[id^='court']");
     if (!courtDiv) return;
 
-    courtDiv.innerHTML = ""; // clear previous content
-
-    if (typeof renderCourtInto === "function") {
-        renderCourtInto(courtDiv, teamId).then(() => {
-            if (typeof initCourtForContainer === "function") {
-                initCourtForContainer(containerId);
-            }
-        });
-    } else if (typeof initCourtForContainer === "function") {
-        initCourtForContainer(containerId);
-    }
+    courtDiv.innerHTML = "";
 }
 
 // ===============================
-// UPDATE TEAM LOGO
+// TEAM LOGOS
 // ===============================
 function updateTeamLogo(side, teamId) {
     const img = document.getElementById(side === "left" ? "logo-left" : "logo-right");
-    if (!img) return;
+    if (!img || !teamId) return;
 
-    if (!teamId) {
-        img.style.display = "none";
-        return;
-    }
-
-    img.onload = () => { img.style.display = "block"; };
-    img.onerror = () => { img.style.display = "none"; };
+    img.onload = () => (img.style.display = "block");
+    img.onerror = () => (img.style.display = "none");
     img.src = `logos/${teamId}.webp`;
 }
 
+
 // ===============================
-// LOAD CSV AND UPDATE STATS
+// CSV STATS LOADING
 // ===============================
 function loadTeamStats() {
     if (!csvData.length) {
-        d3.csv("data/shots_region_team_pace_20252026.csv").then(data => {
-            csvData = data;
-            loadTeamStats(); // retry after loading
-        }).catch(err => console.error("Failed to load CSV:", err));
+        d3.csv("data/shots_region_team_pace_20252026.csv")
+            .then(data => {
+                csvData = data;
+                loadTeamStats();
+            })
+            .catch(console.error);
         return;
     }
 
-    function getTeamRow(teamId) {
-        if (!teamId) return null;
-        return csvData.find(row => Object.keys(row).some(col => col.startsWith(teamId + "_")));
+    function getRow(teamId) {
+        return csvData.find(r =>
+            Object.keys(r).some(c => c.startsWith(teamId + "_"))
+        );
     }
 
-    const leftRow = getTeamRow(selectedLeftTeam);
-    const rightRow = getTeamRow(selectedRightTeam);
+    const leftRow = getRow(window.SELECTED_TEAMS.left.id);
+    const rightRow = getRow(window.SELECTED_TEAMS.right.id);
 
     allStats.forEach(stat => {
-        const statId = stat.replace(/ /g, '-');
-        const leftKey = selectedLeftTeam ? `${selectedLeftTeam}_${stat.replace(/ /g, '_')}` : null;
-        const rightKey = selectedRightTeam ? `${selectedRightTeam}_${stat.replace(/ /g, '_')}` : null;
+        const id = stat.replace(/ /g, "-");
 
-        const leftElem = document.getElementById(`value-left-${statId}`);
-        const rightElem = document.getElementById(`value-right-${statId}`);
+        const leftKey = window.SELECTED_TEAMS.left.id
+            ? `${window.SELECTED_TEAMS.left.id}_${stat.replace(/ /g, "_")}`
+            : null;
 
-        if (leftElem) leftElem.textContent = leftRow && leftKey in leftRow ? leftRow[leftKey] : "N/A";
-        if (rightElem) rightElem.textContent = rightRow && rightKey in rightRow ? rightRow[rightKey] : "N/A";
+        const rightKey = window.SELECTED_TEAMS.right.id
+            ? `${window.SELECTED_TEAMS.right.id}_${stat.replace(/ /g, "_")}`
+            : null;
+
+        document.getElementById(`value-left-${id}`).textContent =
+            leftRow && leftKey in leftRow ? leftRow[leftKey] : "N/A";
+
+        document.getElementById(`value-right-${id}`).textContent =
+            rightRow && rightKey in rightRow ? rightRow[rightKey] : "N/A";
     });
 }
+
+let opacityScale;
+
+function buildOpacityScaleFromRegionAverages() {
+    const regionAverages = [];
+
+    csvData.forEach(row => {
+        let sum = 0;
+        let count = 0;
+
+        Object.keys(row).forEach(key => {
+            if (key.endsWith("_Expected_Points_Pace")) {
+                const v = +row[key];
+                if (!isNaN(v)) {
+                    sum += v;
+                    count++;
+                }
+            }
+        });
+
+        if (count > 0) {
+            regionAverages.push(sum / count);
+        }
+    });
+
+    const [min, max] = d3.extent(regionAverages);
+
+    opacityScale = d3.scaleLinear()
+        .domain([min, max])
+        .range([0.25, 1])
+        .clamp(true);
+}
+
+// ===============================
+// UPDATE TEAM COLORS IN UI + COURT REGIONS
+// ===============================
+function updateTeamColors() {
+    const leftColor = window.SELECTED_TEAMS.left.color || "#000000";
+    const rightColor = window.SELECTED_TEAMS.right.color || "#000000";
+
+    // --- Update Dropdown Text Colors ---
+    const leftDropdown = document.getElementById("teamDropdownLeft");
+    const rightDropdown = document.getElementById("teamDropdownRight");
+    if (leftDropdown) leftDropdown.style.color = leftColor;
+    if (rightDropdown) rightDropdown.style.color = rightColor;
+
+    // --- Update Court Borders ---
+    const court1 = document.getElementById("court1");
+    const court2 = document.getElementById("court2");
+    if (court1) {
+        court1.style.borderColor = leftColor;
+        court1.style.borderStyle = "solid";
+        court1.style.borderWidth = "2px";
+    }
+    if (court2) {
+        court2.style.borderColor = rightColor;
+        court2.style.borderStyle = "solid";
+        court2.style.borderWidth = "2px";
+    }
+
+    // --- Update Stats Text ---
+    allStats.forEach(stat => {
+        const key = stat.replace(/ /g, "-");
+        const leftValue = document.getElementById(`value-left-${key}`);
+        const rightValue = document.getElementById(`value-right-${key}`);
+        if (leftValue) leftValue.style.color = leftColor;
+        if (rightValue) rightValue.style.color = rightColor;
+    });
+
+    // --- Update Court Polygons ---
+    if (typeof court_g !== "undefined") {
+        court_g.selectAll(".aqua-cyan-region")
+            .attr("fill", leftColor)
+        court_g.selectAll(".coral-chartreuse-region")
+            .attr("fill", leftColor)
+        court_g.selectAll(".orchid-top-paint-region")
+            .attr("fill", leftColor);
+        court_g.selectAll(".sienna-bottom-paint-region")
+            .attr("fill", leftColor);
+        court_g.selectAll(".orange-red-center-region")
+            .attr("fill", leftColor);
+        court_g.selectAll(".orange-black-center-region-right")
+            .attr("fill", leftColor);
+        court_g.selectAll(".orange-red-outer-region")
+            .attr("fill", leftColor);
+        court_g.selectAll(".yellow-orange-outer-region")
+            .attr("fill", leftColor);
+        court_g.selectAll(".maroon-magenta-region")
+            .attr("fill", leftColor)
+        court_g.selectAll(".lime-fuchsia-region")
+            .attr("fill", leftColor);
+        court_g.selectAll(".region-11-combined")
+            .attr("fill", leftColor);
+        court_g.selectAll(".region-12-combined")
+            .attr("fill", leftColor)
+        court_g.selectAll(".orange-red-region")
+            .attr("fill", leftColor);
+        court_g.selectAll(".orange-red-region-right")
+            .attr("fill", leftColor);
+        court_g2.selectAll(".aqua-cyan-region2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".coral-chartreuse-region2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".orchid-top-paint-region2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".sienna-bottom-paint-region2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".orange-red-center-region2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".orange-black-center-region-right2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".orange-red-outer-region2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".yellow-orange-outer-region2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".maroon-magenta-region2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".lime-fuchsia-region2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".region-11-combined2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".region-12-combined2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".orange-red-region2")
+            .attr("fill", rightColor);
+        court_g2.selectAll(".orange-red-region-right2")
+            .attr("fill", rightColor);
+    }
+}
+
 
 // ===============================
 // DROPDOWN HANDLERS
@@ -209,49 +345,59 @@ function setupDropdownHandlers() {
     document.getElementById("teamMenuLeft").addEventListener("click", e => {
         if (e.target.tagName !== "A") return;
 
-        selectedLeftTeam = e.target.dataset.id;
-        document.getElementById("teamDropdownLeft").textContent = e.target.textContent;
+        const teamId = e.target.dataset.id;
+        window.SELECTED_TEAMS.left = {
+            id: teamId,
+            color: TEAM_COLORS[teamId]
+        };
 
-        updateCourt("court1", selectedLeftTeam);
-        updateTeamLogo("left", selectedLeftTeam);
+        document.getElementById("teamDropdownLeft").textContent = e.target.textContent;
+        updateCourt("court1", teamId);
+        updateTeamLogo("left", teamId);
         loadTeamStats();
+        updateTeamColors();
     });
 
     document.getElementById("teamMenuRight").addEventListener("click", e => {
         if (e.target.tagName !== "A") return;
 
-        selectedRightTeam = e.target.dataset.id;
-        document.getElementById("teamDropdownRight").textContent = e.target.textContent;
+        const teamId = e.target.dataset.id;
+        window.SELECTED_TEAMS.right = {
+            id: teamId,
+            color: TEAM_COLORS[teamId]
+        };
 
-        updateCourt("court2", selectedRightTeam);
-        updateTeamLogo("right", selectedRightTeam);
+        document.getElementById("teamDropdownRight").textContent = e.target.textContent;
+        updateCourt("court2", teamId);
+        updateTeamLogo("right", teamId);
         loadTeamStats();
+        updateTeamColors();
     });
 }
 
-
 // ===============================
-// INITIALIZATION
+// INIT
 // ===============================
 document.addEventListener("DOMContentLoaded", () => {
     populateDropdowns();
     buildStatsList();
     setupDropdownHandlers();
 
-    // Initialize first two teams automatically
-    if (teams.length >= 2) {
-        selectedLeftTeam = teams[0].id;
-        selectedRightTeam = teams[1].id;
+    const left = teams[0];
+    const right = teams[1];
 
-        document.getElementById("teamDropdownLeft").textContent = teams[0].name;
-        document.getElementById("teamDropdownRight").textContent = teams[1].name;
+    window.SELECTED_TEAMS.left = { id: left.id, color: TEAM_COLORS[left.id] };
+    window.SELECTED_TEAMS.right = { id: right.id, color: TEAM_COLORS[right.id] };
 
-        updateCourt("court1", selectedLeftTeam);
-        updateCourt("court2", selectedRightTeam);
+    document.getElementById("teamDropdownLeft").textContent = left.name;
+    document.getElementById("teamDropdownRight").textContent = right.name;
 
-        updateTeamLogo("left", selectedLeftTeam);
-        updateTeamLogo("right", selectedRightTeam);
+    updateCourt("court1", left.id);
+    updateCourt("court2", right.id);
 
-        loadTeamStats();
-    }
+    updateTeamLogo("left", left.id);
+    updateTeamLogo("right", right.id);
+
+    loadTeamStats();
+    updateTeamColors();
 });

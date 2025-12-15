@@ -20,9 +20,13 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
     <!-- Your JS -->
+    <script type="module" src="teams.js"></script>
     <script src="regions.js" defer></script>
     <script src="Court.js" defer></script>
+    <script src="Court2.js" defer></script>
     <script type="module" src="teams.js"></script>
+
+
 
     <link rel="stylesheet" href="css/styles.css">
 
@@ -79,18 +83,18 @@
             <div id="court1" class="court-container"></div>
             <img id="logo-left" class="team-logo" src="" alt="Team Logo" style="display:none;">
         </div>
-
         <!-- MIDDLE STATS COLUMN -->
-        <div class="col-4 border-start border-end">
-            <div id="stats-column">
-                <h5 class="mt-2 fw-bold">Statistics</h5>
-                <ul id="stats-list" class="list-group mb-4"></ul>
-            </div>
+        <div class="col-4 bor  er-start border-end">
             <div class="text-center">
                 <a href="https://github.com/RentoSaijo/NBAxP" class="text-black">
                     <i class="fab fa-github" style="font-size: 3rem;"></i>
                 </a>
             </div>
+            <div id="stats-column">
+                <h5 class="mt-2 fw-bold">Statistics</h5>
+                <ul id="stats-list" class="list-group mb-4"></ul>
+            </div>
+
         </div>
 
         <!-- RIGHT COURT -->
