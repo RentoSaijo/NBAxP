@@ -1,21 +1,21 @@
-// Court.js
+// Court2.js
 
 // --- globals so other files (Shot.js, Slider.js, HeatMap.js) can use them ---
-let margin;
-let chartDiv, court, heat_g, court_g, title;
-let slider_axis, slider_rect, rect_entity;
-let court_xScale, court_yScale, shot_xScale, shot_yScale, color;
-let Basket, Backboard, Outterbox, Innerbox, CornerThreeLeft, CornerThreeRight, OuterLine;
-let RestrictedArea, TopFreeThrow, BottomFreeThrow, ThreeLine, CenterOuter, CenterInner;
+let margin2;
+let chartDiv2, court2, heat_g2, court_g2, title2;
+let slider_axis2, slider_rect2, rect_entity2;
+let court_xScale2, court_yScale2, shot_xScale2, shot_yScale2, color2;
+let Basket2, Backboard2, Outterbox2, Innerbox2, CornerThreeLeft2, CornerThreeRight2, OuterLine2;
+let RestrictedArea2, TopFreeThrow2, BottomFreeThrow2, ThreeLine2, CenterOuter2, CenterInner2;
 
 // -------------------------------------------------------------------
 //   COURT OBJECT
 // -------------------------------------------------------------------
 
-class Court {
+class Court2 {
     constructor(options = {}) {
         // Allow some config if you ever want it
-        this.containerSelector = options.containerSelector || "#court";
+        this.containerSelector = options.containerSelector || "#court2";
         this.width = options.width || 480;
         this.height = this.width / 50 * 47;
 
@@ -23,16 +23,16 @@ class Court {
     }
 
     init() {
-        margin = { left: 20, right: 20, top: 20, bottom: 20 };
+        margin2 = { left: 20, right: 20, top: 20, bottom: 20 };
 
         // container div for the court
         // (we still assume an element with id="court" exists)
-        chartDiv = document.querySelector(this.containerSelector) ||
+        chartDiv2 = document.querySelector(this.containerSelector) ||
             document.getElementById('court');
-        this.chartDiv = chartDiv;
+        this.chartDiv2 = chartDiv2;
         // Clear any existing contents so we don't render multiple courts in the same container
-        if (chartDiv) {
-            d3.select(chartDiv).selectAll('*').remove();
+        if (chartDiv2) {
+            d3.select(chartDiv2).selectAll('*').remove();
         }
 
         // Clear any previous caption text so it doesn't stack
@@ -42,83 +42,83 @@ class Court {
         }
 
 
-        court = d3.select(chartDiv)
+        court2 = d3.select(chartDiv2)
             .append('court')
             .append('svg')
             .attr('width', this.width)
             .attr('height', this.height);
-        this.svg = court;
+        this.svg = court2;
 
         // keep this for other files that might use it
-        court.append('table');
+        court2.append('table');
 
-        heat_g  = court.append('g');
-        court_g = court.append('g');
-        this.heat_g  = heat_g;
-        this.court_g = court_g;
+        heat_g2  = court2.append('g');
+        court_g2 = court2.append('g');
+        this.heat_g2  = heat_g2;
+        this.court_g2 = court_g2;
 
-        title = d3.select(document.getElementById('caption')).append('text');
-        this.title = title;
+        title2 = d3.select(document.getElementById('caption')).append('text');
+        this.title2 = title2;
 
         // slider containers (Slider.js expects these)
-        slider_axis = court.append('g')
+        slider_axis2 = court2.append('g')
             .attr('class', 'slider-axis');
-        slider_rect = court.append('g')
+        slider_rect2 = court2.append('g')
             .attr('class', 'slider-rect');
-        rect_entity = slider_rect.append('rect');
-        this.slider_axis = slider_axis;
-        this.slider_rect = slider_rect;
-        this.rect_entity = rect_entity;
+        rect_entity2 = slider_rect2.append('rect');
+        this.slider_axis2 = slider_axis2;
+        this.slider_rect2 = slider_rect2;
+        this.rect_entity2 = rect_entity2;
 
         // scales (same domains as before)
-        court_xScale = d3.scaleLinear().domain([-25, 25]);
-        court_yScale = d3.scaleLinear().domain([-4, 43]);
-        shot_xScale  = d3.scaleLinear().domain([-250, 250]);
-        shot_yScale  = d3.scaleLinear().domain([-45, 420]);
+        court_xScale2 = d3.scaleLinear().domain([-25, 25]);
+        court_yScale2 = d3.scaleLinear().domain([-4, 43]);
+        shot_xScale2  = d3.scaleLinear().domain([-250, 250]);
+        shot_yScale2  = d3.scaleLinear().domain([-45, 420]);
 
-        this.court_xScale = court_xScale;
-        this.court_yScale = court_yScale;
-        this.shot_xScale  = shot_xScale;
-        this.shot_yScale  = shot_yScale;
+        this.court_xScale2 = court_xScale2;
+        this.court_yScale2 = court_yScale2;
+        this.shot_xScale2  = shot_xScale2;
+        this.shot_yScale2  = shot_yScale2;
 
-        color = d3.scaleSequential(d3.interpolateOrRd)
+        color2 = d3.scaleSequential(d3.interpolateOrRd)
             .domain([5e-6, 3e-2]); // Points per square pixel.
-        this.color = color;
+        this.color2 = color2;
 
         // shapes used by draw_court
-        Basket           = court_g.append('circle');
-        Backboard        = court_g.append('rect');
-        Outterbox        = court_g.append('rect');
-        Innerbox         = court_g.append('rect');
+        Basket2           = court_g2.append('circle');
+        Backboard2        = court_g2.append('rect');
+        Outterbox2        = court_g2.append('rect');
+        Innerbox2         = court_g2.append('rect');
 
-        CornerThreeLeft  = court_g.append('line');
-        CornerThreeRight = court_g.append('line');
+        CornerThreeLeft2  = court_g2.append('line');
+        CornerThreeRight2 = court_g2.append('line');
 
-        OuterLine        = court_g.append('rect');
-        RestrictedArea   = court_g.append('path');
-        TopFreeThrow     = court_g.append('path');
-        BottomFreeThrow  = court_g.append('path');
-        ThreeLine        = court_g.append('path');
-        CenterOuter      = court_g.append('path');
-        CenterInner      = court_g.append('path');
+        OuterLine2        = court_g2.append('rect');
+        RestrictedArea2   = court_g2.append('path');
+        TopFreeThrow2     = court_g2.append('path');
+        BottomFreeThrow2  = court_g2.append('path');
+        ThreeLine2        = court_g2.append('path');
+        CenterOuter2      = court_g2.append('path');
+        CenterInner2      = court_g2.append('path');
 
-        this.Basket           = Basket;
-        this.Backboard        = Backboard;
-        this.Outterbox        = Outterbox;
-        this.Innerbox         = Innerbox;
-        this.CornerThreeLeft  = CornerThreeLeft;
-        this.CornerThreeRight = CornerThreeRight;
-        this.OuterLine        = OuterLine;
-        this.RestrictedArea   = RestrictedArea;
-        this.TopFreeThrow     = TopFreeThrow;
-        this.BottomFreeThrow  = BottomFreeThrow;
-        this.ThreeLine        = ThreeLine;
-        this.CenterOuter      = CenterOuter;
-        this.CenterInner      = CenterInner;
+        this.Basket2           = Basket2;
+        this.Backboard2        = Backboard2;
+        this.Outterbox2        = Outterbox2;
+        this.Innerbox2         = Innerbox2;
+        this.CornerThreeLeft2  = CornerThreeLeft2;
+        this.CornerThreeRight2 = CornerThreeRight2;
+        this.OuterLine2        = OuterLine2;
+        this.RestrictedArea2   = RestrictedArea2;
+        this.TopFreeThrow2     = TopFreeThrow2;
+        this.BottomFreeThrow2  = BottomFreeThrow2;
+        this.ThreeLine2        = ThreeLine2;
+        this.CenterOuter2      = CenterOuter2;
+        this.CenterInner2      = CenterInner2;
 
         // after setting all this.* fields:
         this.bindGlobals();
-        draw_court();
+        draw_court2();
 
 
         // initialize slider if Slider() is defined
@@ -129,40 +129,40 @@ class Court {
 
     // NEW: make this instance the "active" one for draw_court()
     bindGlobals() {
-        chartDiv      = this.chartDiv;
-        court         = this.svg;
-        heat_g        = this.heat_g;
-        court_g       = this.court_g;
-        title         = this.title;
+        chartDiv2      = this.chartDiv2;
+        court2         = this.svg;
+        heat_g2        = this.heat_g2;
+        court_g2       = this.court_g2;
+        title2         = this.title2;
 
-        slider_axis   = this.slider_axis;
-        slider_rect   = this.slider_rect;
-        rect_entity   = this.rect_entity;
+        slider_axis2   = this.slider_axis2;
+        slider_rect2   = this.slider_rect2;
+        rect_entity2   = this.rect_entity2;
 
-        court_xScale  = this.court_xScale;
-        court_yScale  = this.court_yScale;
-        shot_xScale   = this.shot_xScale;
-        shot_yScale   = this.shot_yScale;
-        color         = this.color;
+        court_xScale2  = this.court_xScale2;
+        court_yScale2  = this.court_yScale2;
+        shot_xScale2   = this.shot_xScale2;
+        shot_yScale2   = this.shot_yScale2;
+        color2         = this.color2;
 
-        Basket           = this.Basket;
-        Backboard        = this.Backboard;
-        Outterbox        = this.Outterbox;
-        Innerbox         = this.Innerbox;
-        CornerThreeLeft  = this.CornerThreeLeft;
-        CornerThreeRight = this.CornerThreeRight;
-        OuterLine        = this.OuterLine;
-        RestrictedArea   = this.RestrictedArea;
-        TopFreeThrow     = this.TopFreeThrow;
-        BottomFreeThrow  = this.BottomFreeThrow;
-        ThreeLine        = this.ThreeLine;
-        CenterOuter      = this.CenterOuter;
-        CenterInner      = this.CenterInner;
+        Basket2           = this.Basket2;
+        Backboard2        = this.Backboard2;
+        Outterbox2        = this.Outterbox2;
+        Innerbox2         = this.Innerbox2;
+        CornerThreeLeft2  = this.CornerThreeLeft2;
+        CornerThreeRight2 = this.CornerThreeRight2;
+        OuterLine2        = this.OuterLine2;
+        RestrictedArea2   = this.RestrictedArea2;
+        TopFreeThrow2     = this.TopFreeThrow2;
+        BottomFreeThrow2  = this.BottomFreeThrow2;
+        ThreeLine2        = this.ThreeLine2;
+        CenterOuter2      = this.CenterOuter2;
+        CenterInner2      = this.CenterInner2;
     }
 
     redraw() {
         // Rebuild the entire SVG so we don’t accumulate appended lines/polygons on redraw
-        const container = this.chartDiv || document.querySelector(this.containerSelector);
+        const container = this.chartDiv2 || document.querySelector(this.containerSelector);
         if (!container) return;
 
         d3.select(container).selectAll('*').remove();
@@ -176,10 +176,10 @@ class Court {
 
     getScales() {
         return {
-            court_xScale,
-            court_yScale,
-            shot_xScale,
-            shot_yScale
+            court_xScale2,
+            court_yScale2,
+            shot_xScale2,
+            shot_yScale2
         };
     }
 
@@ -188,25 +188,21 @@ class Court {
 
 // Old API name kept for compatibility: initCourt()
 // Now it just constructs ONE Court object.
-function initCourt() {
+function initCourt2() {
     // Guard against double-initialization (e.g., if this script is loaded twice)
-    if (window.__courtInitialized) return;
-    window.__courtInitialized = true;
+    if (window.__court2Initialized) return;
+    window.__court2Initialized = true;
 
-    // Prefer #court, but fall back to #court1 if that’s what your HTML uses
+    // Prefer #court2, but fall back to #court or #court1 if that’s what your HTML uses
     const selector =
-        document.querySelector('#court')  ? '#court'  :
-            document.querySelector('#court1') ? '#court1' :
-                document.querySelector('#court2') ? '#court2' :
-                    '#court';
+        document.querySelector('#court2') ? '#court2' :
+            document.querySelector('#court')  ? '#court'  :
+                document.querySelector('#court1') ? '#court1' :
+                    '#court2';
 
-    window.court1 = new Court({ containerSelector: selector });
-    // Convenience alias some files may use
-    window.court = window.court1;
-    // No second court anymore
-    window.court2 = null;
+    window.court2 = new Court2({ containerSelector: selector });
 }
-document.addEventListener('DOMContentLoaded', initCourt);
+document.addEventListener('DOMContentLoaded', initCourt2);
 
 
 
@@ -214,17 +210,17 @@ document.addEventListener('DOMContentLoaded', initCourt);
 //   COURT DRAWING
 // -------------------------------------------------------------------
 
-function draw_court() {
+function draw_court2() {
     const width = 480;
     const height = width / 50 * 47;
-    court_g.attr("width", width)
+    court_g2.attr("width", width)
         .attr("height", height);
 
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    const innerWidth = width - margin2.left - margin2.right;
+    const innerHeight = height - margin2.top - margin2.bottom;
 
-    court_xScale.range([margin.left, innerWidth]).nice();
-    court_yScale.range([margin.top, innerHeight]).nice();
+    court_xScale2.range([margin2.left, innerWidth]).nice();
+    court_yScale2.range([margin2.top, innerHeight]).nice();
 
     // Track final sideline regions (11 and 12)
     let area11 = null;
@@ -232,26 +228,26 @@ function draw_court() {
 
 
     // Rim
-    Basket.attr('cx', court_xScale(0))
-        .attr('cy', court_yScale(-0.75))
-        .attr('r', court_yScale(0.75) - court_yScale(0))
+    Basket2.attr('cx', court_xScale2(0))
+        .attr('cy', court_yScale2(-0.75))
+        .attr('r', court_yScale2(0.75) - court_yScale2(0))
         .style('fill', 'none')
         .style('stroke', 'black');
 
     // Backboard
-    Backboard.attr('x', court_xScale(-3))
-        .attr('y', court_yScale(-1.5))
-        .attr('width', court_xScale(3) - court_xScale(-3))
+    Backboard2.attr('x', court_xScale2(-3))
+        .attr('y', court_yScale2(-1.5))
+        .attr('width', court_xScale2(3) - court_xScale2(-3))
         .attr('height', 1)
         .style('fill', 'none')
         .style('stroke', 'black');
 
     // Outer paint (lane box)
-    Outterbox
-        .attr('x', court_xScale(-8))
-        .attr('y', court_yScale(-4))
-        .attr('width', court_xScale(8) - court_xScale(-8))
-        .attr('height', court_yScale(15) - court_yScale(-4))
+    Outterbox2
+        .attr('x', court_xScale2(-8))
+        .attr('y', court_yScale2(-4))
+        .attr('width', court_xScale2(8) - court_xScale2(-8))
+        .attr('height', court_yScale2(15) - court_yScale2(-4))
         .style('fill', 'none')
         .style('stroke', 'black');
 
@@ -265,31 +261,31 @@ function draw_court() {
     //     .style('stroke', 'black');
 
     // Corner 3s as true lines
-    CornerThreeLeft
-        .attr('x1', court_xScale(-22))
-        .attr('y1', court_yScale(-4))
-        .attr('x2', court_xScale(-22))
-        .attr('y2', court_yScale(10))
+    CornerThreeLeft2
+        .attr('x1', court_xScale2(-22))
+        .attr('y1', court_yScale2(-4))
+        .attr('x2', court_xScale2(-22))
+        .attr('y2', court_yScale2(10))
         .style('stroke', 'black')
         .style('stroke-width', 1)
         .style('fill', 'none');   // harmless, but fine to leave
 
-    CornerThreeRight
-        .attr('x1', court_xScale(22))
-        .attr('y1', court_yScale(-4))
-        .attr('x2', court_xScale(22))
-        .attr('y2', court_yScale(10))
+    CornerThreeRight2
+        .attr('x1', court_xScale2(22))
+        .attr('y1', court_yScale2(-4))
+        .attr('x2', court_xScale2(22))
+        .attr('y2', court_yScale2(10))
         .style('stroke', 'black')
         .style('stroke-width', 1)
         .style('fill', 'none');
 
 
     // Outer boundary
-    OuterLine
-        .attr('x', court_xScale(-25))
-        .attr('y', court_yScale(-4))
-        .attr('width', court_xScale(25) - court_xScale(-25))
-        .attr('height', court_yScale(43) - court_yScale(-4))
+    OuterLine2
+        .attr('x', court_xScale2(-25))
+        .attr('y', court_yScale2(-4))
+        .attr('width', court_xScale2(25) - court_xScale2(-25))
+        .attr('height', court_yScale2(43) - court_yScale2(-4))
         .style('fill', 'none')
         .style('stroke', 'black');
 
@@ -326,8 +322,8 @@ function draw_court() {
 
     // 3-point arc
     var angle = Math.atan((10 - 0.75) / (22)) * 180 / Math.PI;
-    var dis = court_yScale(18); // radius in pixels
-    appendArcPath(ThreeLine, dis,
+    var dis = court_yScale2(18); // radius in pixels
+    appendArcPath2(ThreeLine2, dis,
         (angle + 90) * Math.PI / 180,
         (270 - angle) * Math.PI / 180)
         .attr('fill', 'none')
@@ -335,7 +331,7 @@ function draw_court() {
         .attr('stroke-width', 1)
         .attr('class', 'shot-chart-court-3pt-line')
         .attr("transform",
-            "translate(" + court_xScale(0) + ", " + court_yScale(0) + ")");
+            "translate(" + court_xScale2(0) + ", " + court_yScale2(0) + ")");
 
     // Center circles – still commented out
     // appendArcPath(CenterOuter, ...)
@@ -353,11 +349,11 @@ function draw_court() {
     const sidelineRightFt = 25;
 
     // left horizontal: from left sideline (-25) to left corner 3 vertical (-22)
-    court_g.append("line")
-        .attr("x1", court_xScale(sidelineLeftFt))
-        .attr("y1", court_yScale(bandYFt))
-        .attr("x2", court_xScale(-22))
-        .attr("y2", court_yScale(bandYFt))
+    court_g2.append("line")
+        .attr("x1", court_xScale2(sidelineLeftFt))
+        .attr("y1", court_yScale2(bandYFt))
+        .attr("x2", court_xScale2(-22))
+        .attr("y2", court_yScale2(bandYFt))
         .attr("class", "court-line")
         .style("stroke", "black")
         .style("stroke-width", 1);
@@ -374,10 +370,10 @@ function draw_court() {
         const cornerLeftFt = -22;   // chartreuse vertical
 
         // convert to pixels
-        const topYpx = court_yScale(topYFt);
-        const bottomYpx = court_yScale(bottomYFt);
-        const sidelineLeftXpx = court_xScale(sidelineLeftFt);
-        const cornerLeftXpx = court_xScale(cornerLeftFt);
+        const topYpx = court_yScale2(topYFt);
+        const bottomYpx = court_yScale2(bottomYFt);
+        const sidelineLeftXpx = court_xScale2(sidelineLeftFt);
+        const cornerLeftXpx = court_xScale2(cornerLeftFt);
 
         // polygon in pixel space:
         // (-25, -4) -> (-22, -4) -> (-22, 10) -> (-25, 10)
@@ -388,7 +384,7 @@ function draw_court() {
         coralChartreusePx.push([sidelineLeftXpx, topYpx]);    // D
 
         // draw the shaded region
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "coral-chartreuse-region")
             .attr("points", coralChartreusePx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#832f0b")   // choose any color you like
@@ -397,11 +393,11 @@ function draw_court() {
 
         // compute area in feet^2 and log it
         const coralChartreuseFeet = coralChartreusePx.map(([x, y]) => [
-            court_xScale.invert(x),
-            court_yScale.invert(y)
+            court_xScale2.invert(x),
+            court_yScale2.invert(y)
         ]);
 
-        const areaCoralChartreuseFt2 = polygonAreaFeet(coralChartreuseFeet);
+        const areaCoralChartreuseFt2 = polygonAreaFeet2(coralChartreuseFeet);
         console.log(
             "AREA 1 left corner-3 box ≈",
             areaCoralChartreuseFt2.toFixed(2),
@@ -411,11 +407,11 @@ function draw_court() {
 
 
     // right horizontal: from right sideline (25) to right corner 3 vertical (22)
-    court_g.append("line")
-        .attr("x1", court_xScale(sidelineRightFt))
-        .attr("y1", court_yScale(bandYFt))
-        .attr("x2", court_xScale(22))
-        .attr("y2", court_yScale(bandYFt))
+    court_g2.append("line")
+        .attr("x1", court_xScale2(sidelineRightFt))
+        .attr("y1", court_yScale2(bandYFt))
+        .attr("x2", court_xScale2(22))
+        .attr("y2", court_yScale2(bandYFt))
         .attr("class", "court-line")
         .style("stroke", "black")
         .style("stroke-width", 1);
@@ -432,10 +428,10 @@ function draw_court() {
         const sidelineRightFtLocal = 25; // right sideline
 
         // convert to pixels
-        const topYpx = court_yScale(topYFt);
-        const bottomYpx = court_yScale(bottomYFt);
-        const cornerRightXpx = court_xScale(cornerRightFt);
-        const sidelineRightXpx = court_xScale(sidelineRightFtLocal);
+        const topYpx = court_yScale2(topYFt);
+        const bottomYpx = court_yScale2(bottomYFt);
+        const cornerRightXpx = court_xScale2(cornerRightFt);
+        const sidelineRightXpx = court_xScale2(sidelineRightFtLocal);
 
         // polygon in pixel space:
         // (22, -4) -> (25, -4) -> (25, 10) -> (22, 10)
@@ -446,7 +442,7 @@ function draw_court() {
         aquaCyanPx.push([cornerRightXpx,  topYpx]);     // D
 
         // draw the shaded region
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "aqua-cyan-region")
             .attr("points", aquaCyanPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#ff8000")   // pick any color you like
@@ -455,11 +451,11 @@ function draw_court() {
 
         // compute area in feet^2 and log it
         const aquaCyanFeet = aquaCyanPx.map(([x, y]) => [
-            court_xScale.invert(x),
-            court_yScale.invert(y)
+            court_xScale2.invert(x),
+            court_yScale2.invert(y)
         ]);
 
-        const areaAquaCyanFt2 = polygonAreaFeet(aquaCyanFeet);
+        const areaAquaCyanFt2 = polygonAreaFeet2(aquaCyanFeet);
         console.log(
             "AREA 2 right corner-3 box ≈",
             areaAquaCyanFt2.toFixed(2),
@@ -473,20 +469,20 @@ function draw_court() {
     const laneBottomFt = 15;   // top of paint (free throw line)
     const midYFt = (laneTopFt + laneBottomFt) / 2;  // 5.5
 
-    court_g.append("line")
-        .attr("x1", court_xScale(laneLeftFt))
-        .attr("y1", court_yScale(midYFt))
-        .attr("x2", court_xScale(laneRightFt))
-        .attr("y2", court_yScale(midYFt))
+    court_g2.append("line")
+        .attr("x1", court_xScale2(laneLeftFt))
+        .attr("y1", court_yScale2(midYFt))
+        .attr("x2", court_xScale2(laneRightFt))
+        .attr("y2", court_yScale2(midYFt))
         .attr("class", "court-line")
         .style("stroke", "black")
         .style("stroke-width", 1);
 
-    court_g.append("line")
-        .attr("x1", court_xScale(laneLeftFt))
-        .attr("y1", court_yScale(midYFt))
-        .attr("x2", court_xScale(laneRightFt))
-        .attr("y2", court_yScale(midYFt))
+    court_g2.append("line")
+        .attr("x1", court_xScale2(laneLeftFt))
+        .attr("y1", court_yScale2(midYFt))
+        .attr("x2", court_xScale2(laneRightFt))
+        .attr("y2", court_yScale2(midYFt))
         .attr("class", "court-line")
         .style("stroke", "black")
         .style("stroke-width", 1);
@@ -498,10 +494,10 @@ function draw_court() {
         const leftXFt = laneLeftFt;   // -8 ft
         const rightXFt = laneRightFt; //  8 ft
 
-        const topYpx = court_yScale(topYFt);
-        const bottomYpx = court_yScale(bottomYFt);
-        const leftXpx = court_xScale(leftXFt);
-        const rightXpx = court_xScale(rightXFt);
+        const topYpx = court_yScale2(topYFt);
+        const bottomYpx = court_yScale2(bottomYFt);
+        const leftXpx = court_xScale2(leftXFt);
+        const rightXpx = court_xScale2(rightXFt);
 
         // polygon in pixel space: (-8, 5.5) -> (8, 5.5) -> (8, 15) -> (-8, 15)
         const orchidPaintPx = [];
@@ -511,7 +507,7 @@ function draw_court() {
         orchidPaintPx.push([leftXpx,  bottomYpx]); // D
 
         // draw the shaded region
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "orchid-top-paint-region")
             .attr("points", orchidPaintPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#8821d5")   // choose any color you like
@@ -520,11 +516,11 @@ function draw_court() {
 
         // compute area in feet^2 and log it
         const orchidPaintFeet = orchidPaintPx.map(([x, y]) => [
-            court_xScale.invert(x),
-            court_yScale.invert(y)
+            court_xScale2.invert(x),
+            court_yScale2.invert(y)
         ]);
 
-        const areaOrchidPaintFt2 = polygonAreaFeet(orchidPaintFeet);
+        const areaOrchidPaintFt2 = polygonAreaFeet2(orchidPaintFeet);
         console.log(
             "AREA 6 top of the paint ≈",
             areaOrchidPaintFt2.toFixed(2),
@@ -539,10 +535,10 @@ function draw_court() {
         const leftXFt = laneLeftFt;   // -8 ft
         const rightXFt = laneRightFt; //  8 ft
 
-        const topYpx = court_yScale(topYFt);
-        const bottomYpx = court_yScale(bottomYFt);
-        const leftXpx = court_xScale(leftXFt);
-        const rightXpx = court_xScale(rightXFt);
+        const topYpx = court_yScale2(topYFt);
+        const bottomYpx = court_yScale2(bottomYFt);
+        const leftXpx = court_xScale2(leftXFt);
+        const rightXpx = court_xScale2(rightXFt);
 
         // polygon in pixel space: (-8, -4) -> (8, -4) -> (8, 5.5) -> (-8, 5.5)
         const siennaBottomPaintPx = [];
@@ -552,7 +548,7 @@ function draw_court() {
         siennaBottomPaintPx.push([leftXpx,  bottomYpx]); // D
 
         // draw the shaded region
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "sienna-bottom-paint-region")
             .attr("points", siennaBottomPaintPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#a0522d")   // sienna-like color; tweak if you want
@@ -561,11 +557,11 @@ function draw_court() {
 
         // compute area in feet^2 and log it
         const siennaBottomPaintFeet = siennaBottomPaintPx.map(([x, y]) => [
-            court_xScale.invert(x),
-            court_yScale.invert(y)
+            court_xScale2.invert(x),
+            court_yScale2.invert(y)
         ]);
 
-        const areaSiennaBottomPaintFt2 = polygonAreaFeet(siennaBottomPaintFeet);
+        const areaSiennaBottomPaintFt2 = polygonAreaFeet2(siennaBottomPaintFeet);
         console.log(
             "AREA 5 bottom of the paint ≈",
             areaSiennaBottomPaintFt2.toFixed(2),
@@ -576,15 +572,15 @@ function draw_court() {
 
     // ----- intersections of basket→paint-corner rays with 3pt arc -----
     const circleCenter = {
-        x: court_xScale(0),
-        y: court_yScale(0)
+        x: court_xScale2(0),
+        y: court_yScale2(0)
     };
     const circleRadius = dis;
 
 // basket center in pixels
     const basketCenter = {
-        x: court_xScale(0),
-        y: court_yScale(-0.75)
+        x: court_xScale2(0),
+        y: court_yScale2(-0.75)
     };
 
 // top corners of the outer paint (in feet)
@@ -592,12 +588,12 @@ function draw_court() {
     const paintTopRightFt = { x:  8, y: 15 };
 
     const paintTopLeftPx = {
-        x: court_xScale(paintTopLeftFt.x),
-        y: court_yScale(paintTopLeftFt.y)
+        x: court_xScale2(paintTopLeftFt.x),
+        y: court_yScale2(paintTopLeftFt.y)
     };
     const paintTopRightPx = {
-        x: court_xScale(paintTopRightFt.x),
-        y: court_yScale(paintTopRightFt.y)
+        x: court_xScale2(paintTopRightFt.x),
+        y: court_yScale2(paintTopRightFt.y)
     };
 
 // helper: extend a ray from P through Q well beyond the 3pt line
@@ -609,13 +605,13 @@ function draw_court() {
     }
 
 // intersections with the 3pt arc, along basket→paint-corner rays
-    const Iright = lineCircleIntersection(
+    const Iright = lineCircleIntersection2(
         basketCenter,
         extendRay(basketCenter, paintTopRightPx),
         circleCenter,
         circleRadius
     );
-    const Ileft = lineCircleIntersection(
+    const Ileft = lineCircleIntersection2(
         basketCenter,
         extendRay(basketCenter, paintTopLeftPx),
         circleCenter,
@@ -626,10 +622,10 @@ function draw_court() {
 
     // rectangle for the OUTER PAINT in *pixel* space
     const paintRectPx = {
-        xMin: court_xScale(-8),
-        xMax: court_xScale(8),
-        yMin: court_yScale(-4),
-        yMax: court_yScale(15)
+        xMin: court_xScale2(-8),
+        xMax: court_xScale2(8),
+        yMin: court_yScale2(-4),
+        yMax: court_yScale2(15)
     };
 
     // ----- center vertical line: from PAINT EDGE up to half court -----
@@ -641,7 +637,7 @@ function draw_court() {
     };
 
     // intersection of that vertical ray with the 3-pt circle
-    const centerI = lineCircleIntersection(
+    const centerI = lineCircleIntersection2(
         basketCenter,
         centerRayFar,
         circleCenter,
@@ -651,17 +647,17 @@ function draw_court() {
     // only draw the CENTER line from the TOP OF THE PAINT up to half court
     const centerTopPx = {
         x: basketCenter.x,             // x = 0 in feet
-        y: court_yScale(halfCourtY)    // y = 43 in feet
+        y: court_yScale2(halfCourtY)    // y = 43 in feet
     };
 
     // top-center of the paint (free-throw line) in pixels
     const centerPaintEdgePx = {
-        x: court_xScale(0),
-        y: court_yScale(15)            // y = 15 ft = top of the paint
+        x: court_xScale2(0),
+        y: court_yScale2(15)            // y = 15 ft = top of the paint
     };
 
     if (centerI) {
-        court_g.append("line")
+        court_g2.append("line")
             .attr("x1", centerPaintEdgePx.x)  // start at paint edge
             .attr("y1", centerPaintEdgePx.y)
             .attr("x2", centerTopPx.x)        // end at half-court
@@ -679,8 +675,8 @@ function draw_court() {
 
         // top middle of the paint in *pixel* space
         const topCenterPaintPx = {
-            x: court_xScale(0),
-            y: court_yScale(15)
+            x: court_xScale2(0),
+            y: court_yScale2(15)
         };
 
         // build polygon in *pixel* space
@@ -703,7 +699,7 @@ function draw_court() {
             Ileft.x - circleCenter.x
         ) * 180 / Math.PI;
 
-        const arcPts = sampleArcPixels(
+        const arcPts = sampleArcPixels2(
             circleCenter,
             circleRadius,
             angleCenterDeg,
@@ -722,7 +718,7 @@ function draw_court() {
         //    from paintTopLeftPx back to topCenterPaintPx.
 
         // ---- draw the shaded region ----
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "orange-red-center-region")
             .attr("points", wedgePtsPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#d5974f")   // choose any color you like
@@ -731,11 +727,11 @@ function draw_court() {
 
         // ---- compute area in feet^2 and log it ----
         const wedgePtsFeet = wedgePtsPx.map(([x, y]) => [
-            court_xScale.invert(x),
-            court_yScale.invert(y)
+            court_xScale2.invert(x),
+            court_yScale2.invert(y)
         ]);
 
-        const areaFt2 = polygonAreaFeet(wedgePtsFeet);
+        const areaFt2 = polygonAreaFeet2(wedgePtsFeet);
         console.log(
             "Area 9 left of top of the key under left middle of 3 point arc (inside 3-pt line, excluding paint) ≈",
             areaFt2.toFixed(2),
@@ -749,8 +745,8 @@ function draw_court() {
 
         // top middle of the paint in *pixel* space
         const topCenterPaintPx = {
-            x: court_xScale(0),
-            y: court_yScale(15)
+            x: court_xScale2(0),
+            y: court_yScale2(15)
         };
 
         // build polygon in *pixel* space
@@ -773,7 +769,7 @@ function draw_court() {
             Iright.x - circleCenter.x
         ) * 180 / Math.PI;
 
-        const arcPtsRight = sampleArcPixels(
+        const arcPtsRight = sampleArcPixels2(
             circleCenter,
             circleRadius,
             angleCenterDeg,
@@ -791,7 +787,7 @@ function draw_court() {
         //    from paintTopRightPx back to topCenterPaintPx.
 
         // ---- draw the shaded region (use a different color) ----
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "orange-black-center-region-right")
             .attr("points", wedgePtsPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#3f8dcd")   // light blue; change if you want
@@ -800,11 +796,11 @@ function draw_court() {
 
         // ---- compute area in feet^2 and log it ----
         const wedgePtsFeet = wedgePtsPx.map(([x, y]) => [
-            court_xScale.invert(x),
-            court_yScale.invert(y)
+            court_xScale2.invert(x),
+            court_yScale2.invert(y)
         ]);
 
-        const areaFt2 = polygonAreaFeet(wedgePtsFeet);
+        const areaFt2 = polygonAreaFeet2(wedgePtsFeet);
         console.log(
             "Area 10 right of top of the key under right middle of 3 point arc (inside 3-pt line, excluding paint) ≈",
             areaFt2.toFixed(2),
@@ -814,7 +810,7 @@ function draw_court() {
 
 
     // extend those lines from arc to half court (these already start outside paint)
-    const halfCourtYpx = court_yScale(halfCourtY);
+    const halfCourtYpx = court_yScale2(halfCourtY);
 
     if (Iright) {
         const dirRight = {
@@ -829,7 +825,7 @@ function draw_court() {
         };
 
         // draw from TOP-RIGHT CORNER OF THE PAINT to half court
-        court_g.append("line")
+        court_g2.append("line")
             .attr("x1", paintTopRightPx.x)   // start at paint corner
             .attr("y1", paintTopRightPx.y)
             .attr("x2", extendedRight.x)     // end at half-court
@@ -852,7 +848,7 @@ function draw_court() {
         };
 
         // draw from TOP-LEFT CORNER OF THE PAINT to half court
-        court_g.append("line")
+        court_g2.append("line")
             .attr("x1", paintTopLeftPx.x)    // start at paint corner
             .attr("y1", paintTopLeftPx.y)
             .attr("x2", extendedLeft.x)      // end at half-court
@@ -868,10 +864,10 @@ function draw_court() {
     if (centerI && Ileft) {
 
         // top points on half-court line for center and left ray
-        const halfCourtYpxOuter = court_yScale(halfCourtY);
+        const halfCourtYpxOuter = court_yScale2(halfCourtY);
 
         // left sideline x in pixels
-        const sidelineLeftPxX = court_xScale(-25);
+        const sidelineLeftPxX = court_xScale2(-25);
 
         // top point on half court at center line
         const centerTopPxOuter = {
@@ -914,7 +910,7 @@ function draw_court() {
             centerI.x - circleCenter.x
         ) * 180 / Math.PI;
 
-        const arcOuterPts = sampleArcPixels(
+        const arcOuterPts = sampleArcPixels2(
             circleCenter,
             circleRadius,
             angleIleftDeg,
@@ -930,7 +926,7 @@ function draw_court() {
         // polygon will close back up to centerTopPxOuter
 
         // ---- draw the shaded region ----
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "orange-red-outer-region")
             .attr("points", wedgeOuterPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#3b8c25")    // pick any color you like
@@ -939,11 +935,11 @@ function draw_court() {
 
         // ---- compute area in feet^2 and log it ----
         const wedgeOuterFeet = wedgeOuterPx.map(([x, y]) => [
-            court_xScale.invert(x),
-            court_yScale.invert(y)
+            court_xScale2.invert(x),
+            court_yScale2.invert(y)
         ]);
 
-        const areaOuterFt2 = polygonAreaFeet(wedgeOuterFeet);
+        const areaOuterFt2 = polygonAreaFeet2(wedgeOuterFeet);
         console.log(
             "AREA 13 (outside 3pt) left top of the key 3 pointer ≈",
             areaOuterFt2.toFixed(2),
@@ -956,7 +952,7 @@ function draw_court() {
     if (centerI && Iright) {
 
         // y of half-court in pixels
-        const halfCourtYpxOuter = court_yScale(halfCourtY);
+        const halfCourtYpxOuter = court_yScale2(halfCourtY);
 
         // top point on half court along the center (yellow) line
         const centerTopPxOuter = {
@@ -999,7 +995,7 @@ function draw_court() {
             centerI.x - circleCenter.x
         ) * 180 / Math.PI;
 
-        const arcOuterPtsRight = sampleArcPixels(
+        const arcOuterPtsRight = sampleArcPixels2(
             circleCenter,
             circleRadius,
             angleIrightDeg,
@@ -1015,7 +1011,7 @@ function draw_court() {
         // polygon will close back up to centerTopPxOuter
 
         // ---- draw the shaded region ----
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "yellow-orange-outer-region")
             .attr("points", wedgeOuterPxRight.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#e412e4")   // nice yellow; tweak if you want
@@ -1024,11 +1020,11 @@ function draw_court() {
 
         // ---- compute area in feet^2 and log it ----
         const wedgeOuterFeetRight = wedgeOuterPxRight.map(([x, y]) => [
-            court_xScale.invert(x),
-            court_yScale.invert(y)
+            court_xScale2.invert(x),
+            court_yScale2.invert(y)
         ]);
 
-        const areaOuterFt2Right = polygonAreaFeet(wedgeOuterFeetRight);
+        const areaOuterFt2Right = polygonAreaFeet2(wedgeOuterFeetRight);
         console.log(
             "AREA 14 (outside 3pt) right top of the key 3 pointer ≈",
             areaOuterFt2Right.toFixed(2),
@@ -1040,10 +1036,10 @@ function draw_court() {
     // from the hash up to half court -----
     if (Ileft) {
 
-        const halfCourtYpxOuter = court_yScale(halfCourtY);
+        const halfCourtYpxOuter = court_yScale2(halfCourtY);
 
         // left sideline x in pixels
-        const sidelineLeftPxX = court_xScale(-25);
+        const sidelineLeftPxX = court_xScale2(-25);
 
         // point on sideline at the yellow hash (same y as Ileft)
         const sidelineHashPx = {
@@ -1083,10 +1079,10 @@ function draw_court() {
     // from the hash up to the half-court line -----
     if (Iright) {
 
-        const halfCourtYpxOuter = court_yScale(halfCourtY);
+        const halfCourtYpxOuter = court_yScale2(halfCourtY);
 
         // right sideline x in pixels
-        const sidelineRightPxX = court_xScale(25);
+        const sidelineRightPxX = court_xScale2(25);
 
         // point on sideline at the yellow hash (same y as Iright)
         const sidelineHashRightPx = {
@@ -1130,23 +1126,23 @@ function draw_court() {
     const cornerRightYFt = 10;
 
     const cornerLeftPx = {
-        x: court_xScale(cornerLeftXFt),
-        y: court_yScale(cornerLeftYFt)
+        x: court_xScale2(cornerLeftXFt),
+        y: court_yScale2(cornerLeftYFt)
     };
     const cornerRightPx = {
-        x: court_xScale(cornerRightXFt),
-        y: court_yScale(cornerRightYFt)
+        x: court_xScale2(cornerRightXFt),
+        y: court_yScale2(cornerRightYFt)
     };
 
     // where the orange ray (basket -> cornerLeft) exits the paint rectangle
-    const orangeExit = lineRectExitPoint(
+    const orangeExit = lineRectExitPoint2(
         basketCenter,
         cornerLeftPx,
         paintRectPx
     );
 
     // where the orange ray (basket -> cornerRight) exits the paint rectangle
-    const orangeExit1 = lineRectExitPoint(
+    const orangeExit1 = lineRectExitPoint2(
         basketCenter,
         cornerRightPx,
         paintRectPx
@@ -1174,7 +1170,7 @@ function draw_court() {
     const rightStartPx = intersectWithVertical(basketCenter, cornerRightPx, laneRightXpx);
 
     // left ray: from left paint edge to left corner-3 top
-    court_g.append("line")
+    court_g2.append("line")
         .attr("x1", leftStartPx.x)
         .attr("y1", leftStartPx.y)
         .attr("x2", cornerLeftPx.x)
@@ -1189,17 +1185,17 @@ function draw_court() {
 
         // bottom of the paint / baseline in feet (already used above)
         const baselineYFt = laneTopFt;   // -4
-        const baselineYpx = court_yScale(baselineYFt);
+        const baselineYpx = court_yScale2(baselineYFt);
 
         // bottom points on baseline:
         // lane-left edge (x = -8) and corner-3 foot (x = -22)
         const laneLeftBottomPx = {
-            x: court_xScale(laneLeftFt),       // -8
+            x: court_xScale2(laneLeftFt),       // -8
             y: baselineYpx
         };
 
         const maroonBottomPx = {
-            x: court_xScale(cornerLeftXFt),    // -22
+            x: court_xScale2(cornerLeftXFt),    // -22
             y: baselineYpx
         };
 
@@ -1216,7 +1212,7 @@ function draw_court() {
         maroonMagentaPx.push([leftStartPx.x,       leftStartPx.y]);     // D: (-8, ~3.16)
 
         // ---- draw the shaded region ----
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "maroon-magenta-region")
             .attr("points", maroonMagentaPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#ff0000")   // pick any color you like
@@ -1225,11 +1221,11 @@ function draw_court() {
 
         // ---- compute area in feet^2 and log it ----
         const maroonMagentaFeet = maroonMagentaPx.map(([x, y]) => [
-            court_xScale.invert(x),
-            court_yScale.invert(y)
+            court_xScale2.invert(x),
+            court_yScale2.invert(y)
         ]);
 
-        const areaMaroonMagentaFt2 = polygonAreaFeet(maroonMagentaFeet);
+        const areaMaroonMagentaFt2 = polygonAreaFeet2(maroonMagentaFeet);
         console.log(
             "AREA 3 left mid post area ≈",
             areaMaroonMagentaFt2.toFixed(2),
@@ -1239,7 +1235,7 @@ function draw_court() {
 
 
     // right ray: from right paint edge to right corner-3 top
-    court_g.append("line")
+    court_g2.append("line")
         .attr("x1", rightStartPx.x)
         .attr("y1", rightStartPx.y)
         .attr("x2", cornerRightPx.x)
@@ -1254,17 +1250,17 @@ function draw_court() {
 
         // bottom of the paint / baseline in feet
         const baselineYFt = laneTopFt;   // -4
-        const baselineYpx = court_yScale(baselineYFt);
+        const baselineYpx = court_yScale2(baselineYFt);
 
         // bottom points on baseline:
         // lane-right edge (x = 8) and corner-3 foot (x = 22)
         const laneRightBottomPx = {
-            x: court_xScale(laneRightFt),      //  8
+            x: court_xScale2(laneRightFt),      //  8
             y: baselineYpx
         };
 
         const limeBottomPx = {
-            x: court_xScale(cornerRightXFt),   // 22
+            x: court_xScale2(cornerRightXFt),   // 22
             y: baselineYpx
         };
 
@@ -1281,7 +1277,7 @@ function draw_court() {
         limeFuchsiaPx.push([rightStartPx.x,      rightStartPx.y]);      // D: (8, ~3.16)
 
         // ---- draw the shaded region ----
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "lime-fuchsia-region")
             .attr("points", limeFuchsiaPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#80ffc0")   // pick any color you like
@@ -1290,11 +1286,11 @@ function draw_court() {
 
         // ---- compute area in feet^2 and log it ----
         const limeFuchsiaFeet = limeFuchsiaPx.map(([x, y]) => [
-            court_xScale.invert(x),
-            court_yScale.invert(y)
+            court_xScale2.invert(x),
+            court_yScale2.invert(y)
         ]);
 
-        const areaLimeFuchsiaFt2 = polygonAreaFeet(limeFuchsiaFeet);
+        const areaLimeFuchsiaFt2 = polygonAreaFeet2(limeFuchsiaFeet);
         console.log(
             "AREA 4 right mid post area ≈",
             areaLimeFuchsiaFt2.toFixed(2),
@@ -1313,12 +1309,12 @@ function draw_court() {
 
         // key points in *pixel* space
         const sidelineOrangePx = {
-            x: court_xScale(sidelineLeftFt),
-            y: court_yScale(bandYFt)          // y = 10 (orange line)
+            x: court_xScale2(sidelineLeftFt),
+            y: court_yScale2(bandYFt)          // y = 10 (orange line)
         };
 
         const sidelineRedPx = {
-            x: court_xScale(sidelineLeftFt),
+            x: court_xScale2(sidelineLeftFt),
             y: Ileft.y                         // same y as the red hash
         };
 
@@ -1345,7 +1341,7 @@ function draw_court() {
             Ileft.x - circleCenter.x
         ) * 180 / Math.PI;
 
-        const arcStripPts = sampleArcPixels(
+        const arcStripPts = sampleArcPixels2(
             circleCenter,
             circleRadius,
             angleCornerLeftDeg,
@@ -1371,12 +1367,12 @@ function draw_court() {
         const sidelineRightFt = 25;
 
         const sidelineOrangePxRight = {
-            x: court_xScale(sidelineRightFt),
-            y: court_yScale(bandYFt)      // y = 10
+            x: court_xScale2(sidelineRightFt),
+            y: court_yScale2(bandYFt)      // y = 10
         };
 
         const sidelineRedPxRight = {
-            x: court_xScale(sidelineRightFt),
+            x: court_xScale2(sidelineRightFt),
             y: Iright.y                   // same y as right hash
         };
 
@@ -1399,7 +1395,7 @@ function draw_court() {
             Iright.x - circleCenter.x
         ) * 180 / Math.PI;
 
-        const arcStripPtsRight = sampleArcPixels(
+        const arcStripPtsRight = sampleArcPixels2(
             circleCenter,
             circleRadius,
             angleCornerRightDeg,
@@ -1419,15 +1415,15 @@ function draw_court() {
         // From y=10 (corner-3 band) up to half court,
         // bounded by: left sideline, corner-3 vertical, 3-pt arc, and left paint-corner ray.
         if (Ileft) {
-            const halfCourtYpxOuter = court_yScale(halfCourtY);
+            const halfCourtYpxOuter = court_yScale2(halfCourtY);
 
             // left sideline x in pixels
-            const sidelineLeftPxX = court_xScale(sidelineLeftFt); // sidelineLeftFt = -25
+            const sidelineLeftPxX = court_xScale2(sidelineLeftFt); // sidelineLeftFt = -25
 
             // point on sideline at the orange band (y = 10)
             const sidelineOrangePxLeft = {
                 x: sidelineLeftPxX,
-                y: court_yScale(bandYFt)
+                y: court_yScale2(bandYFt)
             };
 
             // point on sideline at half court
@@ -1438,8 +1434,8 @@ function draw_court() {
 
             // corner-3 top on the arc at (-22, 10)
             const cornerLeftPx = {
-                x: court_xScale(-22),
-                y: court_yScale(bandYFt)
+                x: court_xScale2(-22),
+                y: court_yScale2(bandYFt)
             };
 
             // where the left paint-corner ray hits half court
@@ -1474,7 +1470,7 @@ function draw_court() {
                 Ileft.x - circleCenter.x
             ) * 180 / Math.PI;
 
-            const arcCombinedLeft = sampleArcPixels(
+            const arcCombinedLeft = sampleArcPixels2(
                 circleCenter,
                 circleRadius,
                 angleCornerLeftDeg,
@@ -1493,7 +1489,7 @@ function draw_court() {
             // polygon closes back to sidelineOrangePxLeft
 
             // Draw combined shaded region for REGION 11 (old 11 + 13)
-            court_g.append("polygon")
+            court_g2.append("polygon")
                 .attr("class", "region-11-combined")
                 .attr("points", combinedLeftPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#b38cff")   // any single uniform color you like
@@ -1502,11 +1498,11 @@ function draw_court() {
 
 // Compute area in feet^2 and log it
             const combinedLeftFeet = combinedLeftPx.map(([x, y]) => [
-                court_xScale.invert(x),
-                court_yScale.invert(y)
+                court_xScale2.invert(x),
+                court_yScale2.invert(y)
             ]);
 
-            const combinedLeftAreaFt2 = polygonAreaFeet(combinedLeftFeet);
+            const combinedLeftAreaFt2 = polygonAreaFeet2(combinedLeftFeet);
             console.log(
                 "AREA 11 (left sideline, combined from old 11 + 13) ≈",
                 combinedLeftAreaFt2.toFixed(2),
@@ -1521,15 +1517,15 @@ function draw_court() {
         // From y=10 (corner-3 band) up to half court,
         // bounded by: right sideline, corner-3 vertical, 3-pt arc, and right paint-corner ray.
         if (Iright) {
-            const halfCourtYpxOuter = court_yScale(halfCourtY);
+            const halfCourtYpxOuter = court_yScale2(halfCourtY);
 
             // right sideline x in pixels
-            const sidelineRightPxX = court_xScale(sidelineRightFt); // sidelineRightFt = 25
+            const sidelineRightPxX = court_xScale2(sidelineRightFt); // sidelineRightFt = 25
 
             // point on sideline at the orange band (y = 10)
             const sidelineOrangePxRight = {
                 x: sidelineRightPxX,
-                y: court_yScale(bandYFt)
+                y: court_yScale2(bandYFt)
             };
 
             // point on sideline at half court
@@ -1540,8 +1536,8 @@ function draw_court() {
 
             // corner-3 top on the arc at (22, 10)
             const cornerRightPx = {
-                x: court_xScale(22),
-                y: court_yScale(bandYFt)
+                x: court_xScale2(22),
+                y: court_yScale2(bandYFt)
             };
 
             // where the right paint-corner ray hits half court
@@ -1576,7 +1572,7 @@ function draw_court() {
                 Iright.x - circleCenter.x
             ) * 180 / Math.PI;
 
-            const arcCombinedRight = sampleArcPixels(
+            const arcCombinedRight = sampleArcPixels2(
                 circleCenter,
                 circleRadius,
                 angleCornerRightDeg,
@@ -1595,7 +1591,7 @@ function draw_court() {
             // polygon closes back to sidelineOrangePxRight
 
             // Draw combined shaded region for REGION 12 (old 12 + 16)
-            court_g.append("polygon")
+            court_g2.append("polygon")
                 .attr("class", "region-12-combined")
                 .attr("points", combinedRightPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", "#b38cff")
@@ -1604,11 +1600,11 @@ function draw_court() {
 
             // Compute area in feet^2 and log it
             const combinedRightFeet = combinedRightPx.map(([x, y]) => [
-                court_xScale.invert(x),
-                court_yScale.invert(y)
+                court_xScale2.invert(x),
+                court_yScale2.invert(y)
             ]);
 
-            const combinedRightAreaFt2 = polygonAreaFeet(combinedRightFeet);
+            const combinedRightAreaFt2 = polygonAreaFeet2(combinedRightFeet);
             console.log(
                 "AREA 12 (right sideline, combined from old 12 + 16) ≈",
                 combinedRightAreaFt2.toFixed(2),
@@ -1649,7 +1645,7 @@ function draw_court() {
             Ileft.x - circleCenter.x
         ) * 180 / Math.PI;
 
-        const arcPts = sampleArcPixels(
+        const arcPts = sampleArcPixels2(
             circleCenter,
             circleRadius,
             angleCornerLeftDeg,
@@ -1667,7 +1663,7 @@ function draw_court() {
         // 5) when the polygon closes, SVG will draw the left lane edge
         //    from paintTopLeftPx back down to orangeExit (both are on x = lane left)
 
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "orange-red-region")
             .attr("points", wedgePts.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#ffcc80")   // pick any color you like
@@ -1700,7 +1696,7 @@ function draw_court() {
             Iright.x - circleCenter.x
         ) * 180 / Math.PI;
 
-        const arcPts = sampleArcPixels(
+        const arcPts = sampleArcPixels2(
             circleCenter,
             circleRadius,
             angleCornerRightDeg,
@@ -1718,7 +1714,7 @@ function draw_court() {
         // 5) when the polygon closes, SVG will draw the right lane edge
         //    from paintTopRightPx back down to orangeExit (both are on x = lane right)
 
-        court_g.append("polygon")
+        court_g2.append("polygon")
             .attr("class", "orange-red-region-right")
             .attr("points", wedgePts.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", "#cce5ff")   // ⬅ different color; tweak as you like
@@ -1736,11 +1732,11 @@ function draw_court() {
         const regions = window.COURT_REGIONS;
 
         // helpers to convert court coords (feet) -> pixel coords
-        const px = x => court_xScale(x);
-        const py = y => court_yScale(y);
+        const px = x => court_xScale2(x);
+        const py = y => court_yScale2(y);
 
         // --- Numeric labels only, no filled polygons ---
-        const labels = court_g.selectAll('.region-label')
+        const labels = court_g2.selectAll('.region-label')
             .data(regions, d => d.id);
 
         labels.exit().remove();
@@ -1780,27 +1776,27 @@ function draw_court() {
     ];
 
     REGION_CLASS_TO_ID.forEach(([cls, id]) => {
-        court_g.selectAll(`polygon.${cls}`)
+        court_g2.selectAll(`polygon.${cls}`)
             .classed("shot-region", true)
             .attr("data-region", id)
             .style("cursor", "pointer");
     });
 
     // Make sure court lines/geometry don't "steal" the hover from polygons
-    court_g.selectAll("line, path, rect, circle, text")
+    court_g2.selectAll("line, path, rect, circle, text")
         .style("pointer-events", "none");
 
 // After ALL polygons and labels have been drawn,
     // bring all court lines and main geometry to the top:
-    court_g.selectAll(".court-line").raise();
+    court_g2.selectAll(".court-line").raise();
 
-    Basket.raise();
-    Backboard.raise();
-    Outterbox.raise();
-    CornerThreeLeft.raise();
-    CornerThreeRight.raise();
-    OuterLine.raise();
-    ThreeLine.raise();
+    Basket2.raise();
+    Backboard2.raise();
+    Outterbox2.raise();
+    CornerThreeLeft2.raise();
+    CornerThreeRight2.raise();
+    OuterLine2.raise();
+    ThreeLine2.raise();
 
 
 
@@ -1813,7 +1809,7 @@ function draw_court() {
 
 // Line–circle intersection in *pixel* space.
 // P, Q, C are {x, y} objects; R is radius in pixels.
-function lineCircleIntersection(P, Q, C, R) {
+function lineCircleIntersection2(P, Q, C, R) {
     const dx = Q.x - P.x;
     const dy = Q.y - P.y;
 
@@ -1845,7 +1841,7 @@ function lineCircleIntersection(P, Q, C, R) {
     };
 }
 
-function appendArcPath(base, radius, startAngle, endAngle) {
+function appendArcPath2(base, radius, startAngle, endAngle) {
     const points = 30;
 
     const angle = d3.scaleLinear()
@@ -1865,7 +1861,7 @@ function appendArcPath(base, radius, startAngle, endAngle) {
 // radius: in pixels
 // startDeg, endDeg: angles in DEGREES
 // steps: how many segments to split the arc into
-function sampleArcPixels(center, radius, startDeg, endDeg, steps) {
+function sampleArcPixels2(center, radius, startDeg, endDeg, steps) {
     const pts = [];
     const startRad = startDeg * Math.PI / 180;
     const endRad   = endDeg   * Math.PI / 180;
@@ -1883,7 +1879,7 @@ function sampleArcPixels(center, radius, startDeg, endDeg, steps) {
 
 // Line–rectangle exit point in pixel space.
 // P0 is inside the rect; P1 is outside. We return the first boundary point.
-function lineRectExitPoint(P0, P1, rect) {
+function lineRectExitPoint2(P0, P1, rect) {
     const dx = P1.x - P0.x;
     const dy = P1.y - P0.y;
     const candidates = [];
@@ -1914,7 +1910,7 @@ function lineRectExitPoint(P0, P1, rect) {
 
 // Area of a polygon given as [[x,y], ...] in *feet*.
 // Returns a positive area (square feet).
-function polygonAreaFeet(points) {
+function polygonAreaFeet2(points) {
     let sum = 0;
     const n = points.length;
     for (let i = 0; i < n; i++) {

@@ -1,3 +1,4 @@
+
 // Court.js
 
 // --- globals so other files (Shot.js, Slider.js, HeatMap.js) can use them ---
@@ -391,7 +392,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "coral-chartreuse-region")
             .attr("points", coralChartreusePx.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#832f0b")   // choose any color you like
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // choose any color you like
             .attr("opacity", 1)
             .attr("stroke", "none");
 
@@ -449,7 +450,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "aqua-cyan-region")
             .attr("points", aquaCyanPx.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#ff8000")   // pick any color you like
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // pick any color you like
             .attr("opacity", 1)
             .attr("stroke", "none");
 
@@ -514,7 +515,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "orchid-top-paint-region")
             .attr("points", orchidPaintPx.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#8821d5")   // choose any color you like
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // choose any color you like
             .attr("opacity", 1)
             .attr("stroke", "none");
 
@@ -555,7 +556,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "sienna-bottom-paint-region")
             .attr("points", siennaBottomPaintPx.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#a0522d")   // sienna-like color; tweak if you want
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // sienna-like color; tweak if you want
             .attr("opacity", 1)
             .attr("stroke", "none");
 
@@ -725,7 +726,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "orange-red-center-region")
             .attr("points", wedgePtsPx.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#d5974f")   // choose any color you like
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // choose any color you like
             .attr("opacity", 1)
             .attr("stroke", "none");
 
@@ -794,7 +795,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "orange-black-center-region-right")
             .attr("points", wedgePtsPx.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#3f8dcd")   // light blue; change if you want
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // light blue; change if you want
             .attr("opacity", 1)
             .attr("stroke", "none");
 
@@ -933,7 +934,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "orange-red-outer-region")
             .attr("points", wedgeOuterPx.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#3b8c25")    // pick any color you like
+            .attr("fill", window.SELECTED_TEAMS.left.color)    // pick any color you like
             .attr("opacity", 1)
             .attr("stroke", "none");
 
@@ -1018,7 +1019,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "yellow-orange-outer-region")
             .attr("points", wedgeOuterPxRight.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#e412e4")   // nice yellow; tweak if you want
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // nice yellow; tweak if you want
             .attr("opacity", 1)
             .attr("stroke", "none");
 
@@ -1219,7 +1220,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "maroon-magenta-region")
             .attr("points", maroonMagentaPx.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#ff0000")   // pick any color you like
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // pick any color you like
             .attr("opacity", 1)
             .attr("stroke", "none");
 
@@ -1284,7 +1285,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "lime-fuchsia-region")
             .attr("points", limeFuchsiaPx.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#80ffc0")   // pick any color you like
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // pick any color you like
             .attr("opacity", 1)
             .attr("stroke", "none");
 
@@ -1496,7 +1497,7 @@ function draw_court() {
             court_g.append("polygon")
                 .attr("class", "region-11-combined")
                 .attr("points", combinedLeftPx.map(([x, y]) => `${x},${y}`).join(" "))
-                .attr("fill", "#b38cff")   // any single uniform color you like
+                .attr("fill", window.SELECTED_TEAMS.left.color)   // any single uniform color you like
                 .attr("opacity", 1)
                 .attr("stroke", "none");
 
@@ -1598,7 +1599,7 @@ function draw_court() {
             court_g.append("polygon")
                 .attr("class", "region-12-combined")
                 .attr("points", combinedRightPx.map(([x, y]) => `${x},${y}`).join(" "))
-                .attr("fill", "#b38cff")
+                .attr("fill", window.SELECTED_TEAMS.left.color)
                 .attr("opacity", 1)
                 .attr("stroke", "none");
 
@@ -1670,7 +1671,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "orange-red-region")
             .attr("points", wedgePts.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#ffcc80")   // pick any color you like
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // pick any color you like
             .attr("opacity", 1)     // semi-transparent
             .attr("stroke", "none");
     }
@@ -1721,7 +1722,7 @@ function draw_court() {
         court_g.append("polygon")
             .attr("class", "orange-red-region-right")
             .attr("points", wedgePts.map(([x, y]) => `${x},${y}`).join(" "))
-            .attr("fill", "#cce5ff")   // ⬅ different color; tweak as you like
+            .attr("fill", window.SELECTED_TEAMS.left.color)   // ⬅ different color; tweak as you like
             .attr("opacity", 1)
             .attr("stroke", "none");
     }
@@ -1924,4 +1925,3 @@ function polygonAreaFeet(points) {
     }
     return Math.abs(sum) / 2;
 }
-

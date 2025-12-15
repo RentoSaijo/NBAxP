@@ -40,33 +40,7 @@
     bottom: 0px;
 }
 
-/* Footer */
-.footer {
-    background-color: #343a40;
-    color: white;
-    text-align: center;
-    padding: 20px 10px;
-}
 
-.footer p {
-    margin: 0;
-}
-
-.social-links {
-    margin-top: 10px;
-}
-
-.social-link {
-    color: white;
-    margin: 0 15px;
-    font-size: 1rem;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.social-link:hover {
-    color: #17a2b8;
-}
 /* container for BOTH courts */
 .courts-row {
     display: flex;              /* put children in a row */
@@ -82,4 +56,41 @@
     flex: 0 0 45%;              /* each court ~45% width of the row */
     position: relative;         /* so Court.js can size SVG inside */
     height: 70vh;               /* controls vertical size; tweak as you like */
+}
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.column-container {
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px; /* space for fixed navbar */
+}
+
+.court-container {
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+}
+
+.team-logo {
+    width: 120px;
+    margin-top: 10px;
+    display: block;
+}
+
+#stats-column {
+    padding-top: 40px;
+    padding-bottom: 10px;
+}
+
+#stats-list {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+.team-logo {
+    box-shadow: 0px 3px 6px rgba(0,0,0,0.2);
 }
