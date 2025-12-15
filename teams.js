@@ -70,6 +70,39 @@ const TEAM_COLORS = {
     WAS: "#002B5C"
 };
 
+const TEAM_COLOR2={
+    ATL: "#C1D32F",
+    BOS: "#BA9653",
+    BKN: "#FFFFFF",
+    CHA: "#00788C",
+    CHI: "#2B2B2B",
+    CLE: "#FDBB30",
+    DAL: "#002F5F",
+    DEN: "#FEC524",
+    DET: "#1D42BA",
+    GSW: "#FFC72C",
+    HOU: "#2B2B2B",
+    IND: "#FDBB30",
+    LAC: "#1D428A",
+    LAL: "#FDB927",
+    MEM: "#12173F",
+    MIA: "#2B2B2B",
+    MIL: "#EEE1C6",
+    MIN: "#32CD32",
+    NOP: "#C8102E",
+    NYK: "#006BB6",
+    OKC: "#EF3B24",
+    ORL: "#2B2B2B",
+    PHI: "#ED174C",
+    PHX: "#E56020",
+    POR: "#2B2B2B",
+    SAC: "#63727A",
+    SAS: "#2B2B2B",
+    TOR: "#2B2B2B",
+    UTA: "#00471B",
+    WAS: "#E31837"
+}
+
 const LEFT_REGION_MAP = {
     ".aqua-cyan-region": 2,
     ".coral-chartreuse-region": 3,
@@ -110,9 +143,15 @@ window.TEAM_COLORS = TEAM_COLORS;
 // GLOBAL SELECTED TEAM STATE
 // ===============================
 window.SELECTED_TEAMS = {
-    left: { id: null, color: null },
+    left: { id:  null, color: null },
     right: { id: null, color: null }
 };
+
+//window.onload(addRegionHoverLeft(window.SELECTED_TEAMS.left.id));
+window.addEventListener("load", (event) => {
+    addRegionHoverLeft(window.SELECTED_TEAMS.left.id);
+    addRegionHoverRight((window.SELECTED_TEAMS.right.id));
+});
 
 // ===============================
 // CSV + STATS CONFIG
@@ -203,20 +242,20 @@ function updateTeamLogo(side, teamId) {
 // ===============================
 // CSV STATS LOADING
 // ===============================
-function loadTeamStats() {
+function loadTeamStats(thisTeamId) {
     if (!csvData.length) {
         d3.csv(new URL("data/shots_region_team_pace_20252026.csv", document.baseURI))
             .then(data => {
                 csvData = data;
-                loadTeamStats();
+                loadTeamStats(thisTeamId);
             })
             .catch(err => console.error("CSV load failed:", err));
         return;
     }
 
-    function getRow(teamId) {
+    function getRow(thisTeamId) {
         return csvData.find(r =>
-            Object.keys(r).some(c => c.startsWith(teamId + "_"))
+            Object.keys(r).some(c => c.startsWith(thisTeamId + "_"))
         );
     }
 
@@ -263,8 +302,6 @@ function getRegionOpacity(teamId, regionIndex) {
         .domain([1, columnSum])   // log scales cannot include 0, so use 1 as the minimum
         .range([0.2, 1])
         .clamp(true);
-    console.log("Scale BS:" + scale(+csvData[regionIndex][column]));
-    console.log("Actual num:" + csvData[regionIndex][column])
     return scale(+csvData[regionIndex][column]);
 }
 
@@ -418,7 +455,44 @@ function updateTeamColors() {
     }
 }
 
+function addRegionHoverLeft(teamId) {
+    if (typeof court_g === "undefined") return;
 
+    const hoverColor = TEAM_COLOR2[teamId];
+    const baseColor = TEAM_COLORS[teamId];
+
+    Object.keys(LEFT_REGION_MAP).forEach(selector => {
+        court_g.selectAll(selector)
+            .on("mouseenter", function () {
+                d3.select(this)
+                    .attr("fill", hoverColor);
+            })
+            .on("mouseleave", function () {
+                d3.select(this)
+                    .attr("fill", baseColor);
+            });
+    });
+    getRow(window.SELECTED_TEAMS.left.id)
+}
+
+function addRegionHoverRight(teamId) {
+    if (typeof court_g2 === "undefined") return;
+
+    const hoverColor = TEAM_COLOR2[teamId];
+    const baseColor = TEAM_COLORS[teamId];
+
+    Object.keys(RIGHT_REGION_MAP).forEach(selector => {
+        court_g2.selectAll(selector)
+            .on("mouseenter", function () {
+                d3.select(this)
+                    .attr("fill", hoverColor);
+            })
+            .on("mouseleave", function () {
+                d3.select(this)
+                    .attr("fill", baseColor);
+            });
+    });
+}
 // ===============================
 // DROPDOWN HANDLERS
 // ===============================
@@ -435,8 +509,9 @@ function setupDropdownHandlers() {
         document.getElementById("teamDropdownLeft").textContent = e.target.textContent;
         updateCourt("court1", teamId);
         updateTeamLogo("left", teamId);
-        loadTeamStats();
+        loadTeamStats(window.SELECTED_TEAMS.left.id);
         updateTeamColors();
+        addRegionHoverLeft(teamId);
     });
 
     document.getElementById("teamMenuRight").addEventListener("click", e => {
@@ -451,8 +526,9 @@ function setupDropdownHandlers() {
         document.getElementById("teamDropdownRight").textContent = e.target.textContent;
         updateCourt("court2", teamId);
         updateTeamLogo("right", teamId);
-        loadTeamStats();
+        loadTeamStats(window.SELECTED_TEAMS.right.id);
         updateTeamColors();
+        addRegionHoverRight(teamId);
     });
 }
 
@@ -479,6 +555,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTeamLogo("left", left.id);
     updateTeamLogo("right", right.id);
 
-    loadTeamStats();
+    loadTeamStats(window.SELECTED_TEAMS.left.id);
+    loadTeamStats(window.SELECTED_TEAMS.right.id)
     updateTeamColors();
 });
