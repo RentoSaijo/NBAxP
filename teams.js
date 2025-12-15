@@ -259,11 +259,12 @@ function getRegionOpacity(teamId, regionIndex) {
     const values = csvData.map(d => +d[column]);
     const columnSum = d3.sum(values);
 
-    const scale = d3.scaleLinear()
-        .domain([0, columnSum])
+    const scale = d3.scaleLog()
+        .domain([1, columnSum])   // log scales cannot include 0, so use 1 as the minimum
         .range([0.2, 1])
         .clamp(true);
-
+    console.log("Scale BS:" + scale(+csvData[regionIndex][column]));
+    console.log("Actual num:" + csvData[regionIndex][column])
     return scale(+csvData[regionIndex][column]);
 }
 
@@ -271,20 +272,20 @@ function applyRegionOpacityLeft(teamId) {
     if (typeof court_g === "undefined") return;
 
     const regionMap = [
-        ".aqua-cyan-region",
         ".coral-chartreuse-region",
-        ".orchid-top-paint-region",
-        ".sienna-bottom-paint-region",
-        ".orange-red-center-region",
-        ".orange-black-center-region-right",
-        ".orange-red-outer-region",
-        ".yellow-orange-outer-region",
+        ".aqua-cyan-region",
         ".maroon-magenta-region",
         ".lime-fuchsia-region",
+        ".sienna-bottom-paint-region",
+        ".orchid-top-paint-region",
+        ".orange-red-region",
+        ".orange-red-region-right",
+        ".orange-red-center-region",
+        ".orange-black-center-region-right",
         ".region-11-combined",
         ".region-12-combined",
-        ".orange-red-region",
-        ".orange-red-region-right"
+        ".orange-red-outer-region",
+        ".yellow-orange-outer-region",
     ];
 
     regionMap.forEach((selector, i) => {
@@ -297,20 +298,20 @@ function applyRegionOpacityRight(teamId) {
     if (typeof court_g2 === "undefined") return;
 
     const regionMap = [
-        ".aqua-cyan-region2",
         ".coral-chartreuse-region2",
-        ".orchid-top-paint-region2",
-        ".sienna-bottom-paint-region2",
-        ".orange-red-center-region2",
-        ".orange-black-center-region-right2",
-        ".orange-red-outer-region2",
-        ".yellow-orange-outer-region2",
+        ".aqua-cyan-region2",
         ".maroon-magenta-region2",
         ".lime-fuchsia-region2",
+        ".sienna-bottom-paint-region2",
+        ".orchid-top-paint-region2",
+        ".orange-red-region2",
+        ".orange-red-region-right2",
+        ".orange-red-center-region2",
+        ".orange-black-center-region-right2",
         ".region-11-combined2",
         ".region-12-combined2",
-        ".orange-red-region2",
-        ".orange-red-region-right2"
+        ".orange-red-outer-region2",
+        ".yellow-orange-outer-region2",
     ];
 
     regionMap.forEach((selector, i) => {
@@ -414,20 +415,6 @@ function updateTeamColors() {
             .attr("fill", rightColor);
         court_g2.selectAll(".orange-red-region-right2")
             .attr("fill", rightColor);
-
-        if (typeof court_g !== "undefined") {
-            updateCourtOpacity(
-                court_g,
-                window.SELECTED_TEAMS.left.id,
-                LEFT_REGION_MAP
-            );
-
-            updateCourtOpacity(
-                court_g2,
-                window.SELECTED_TEAMS.right.id,
-                RIGHT_REGION_MAP
-            );
-        }
     }
 }
 
