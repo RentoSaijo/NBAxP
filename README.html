@@ -404,7 +404,7 @@ dataset is restricted to regular-season and playoff game IDs (prefixes
 <code>002</code> and <code>004</code>), and only shot actions are
 kept.</p>
 <p>From each play-by-play action, the pipeline retains the identifying
-and spatial fields needed downstream—game ID, team ID, shooter, court
+and spatial fields needed downstream: game ID, team ID, shooter, court
 coordinates, attacking side, shot subtype, descriptor text, qualifier
 tags, and whether the shot was made. Shots are then split into
 <strong>2-point attempts</strong> and <strong>3-point attempts</strong>
@@ -417,7 +417,7 @@ app can label team outputs consistently.</p>
 <p>The wrangling stage standardizes types, cleans categorical fields,
 creates the target variable, and transforms coordinates into a
 consistent attacking-half-court reference frame. Raw shot coordinates
-are converted from the NBA feed’s 0–100 coordinate scale into feet by
+are converted from the NBA feed’s 0-100 coordinate scale into feet by
 mapping the x-axis to court length (94 ft) and the y-axis to court width
 (50 ft). Coordinates are then centered around midcourt, and the
 <code>side</code> field is used to normalize direction so that all shots
