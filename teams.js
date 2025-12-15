@@ -205,12 +205,12 @@ function updateTeamLogo(side, teamId) {
 // ===============================
 function loadTeamStats() {
     if (!csvData.length) {
-        d3.csv("data/shots_region_team_pace_20252026.csv")
+        d3.csv(new URL("data/shots_region_team_pace_20252026.csv", document.baseURI))
             .then(data => {
                 csvData = data;
                 loadTeamStats();
             })
-            .catch(console.error);
+            .catch(err => console.error("CSV load failed:", err));
         return;
     }
 
@@ -239,39 +239,84 @@ function loadTeamStats() {
 
         document.getElementById(`value-right-${id}`).textContent =
             rightRow && rightKey in rightRow ? rightRow[rightKey] : "N/A";
+
+        if (window.SELECTED_TEAMS.left.id) {
+            applyRegionOpacityLeft(window.SELECTED_TEAMS.left.id);
+        }
+
+        if (window.SELECTED_TEAMS.right.id) {
+            applyRegionOpacityRight(window.SELECTED_TEAMS.right.id);
+        }
     });
 }
 
 function getRegionOpacity(teamId, regionIndex) {
     if (!csvData.length || !teamId) return 0.2;
 
-    const columnName = `${teamId}_Expected_Points_Pace`;
+    const column = `${teamId}_Expected_Points_Pace`;
+    if (!(column in csvData[0])) return 0.2;
 
-    if (!(columnName in csvData[0])) return 0.2;
+    const values = csvData.map(d => +d[column]);
+    const columnSum = d3.sum(values);
 
-    // Entire column
-    const columnValues = csvData.map(d => d[columnName]);
-
-    const columnSum = d3.sum(columnValues);
-
-    const opacityScale = d3.scaleLinear()
+    const scale = d3.scaleLinear()
         .domain([0, columnSum])
         .range([0.2, 1])
         .clamp(true);
 
-    const row = csvData[regionIndex];
-    if (!row) return 0.2;
-
-    return opacityScale(row[columnName]);
+    return scale(+csvData[regionIndex][column]);
 }
 
-function updateCourtOpacity(courtGroup, teamId, regionMap) {
-    Object.entries(regionMap).forEach(([selector, regionIndex]) => {
-        const opacity = getRegionOpacity(teamId, regionIndex);
+function applyRegionOpacityLeft(teamId) {
+    if (typeof court_g === "undefined") return;
 
-        courtGroup
+    const regionMap = [
+        ".aqua-cyan-region",
+        ".coral-chartreuse-region",
+        ".orchid-top-paint-region",
+        ".sienna-bottom-paint-region",
+        ".orange-red-center-region",
+        ".orange-black-center-region-right",
+        ".orange-red-outer-region",
+        ".yellow-orange-outer-region",
+        ".maroon-magenta-region",
+        ".lime-fuchsia-region",
+        ".region-11-combined",
+        ".region-12-combined",
+        ".orange-red-region",
+        ".orange-red-region-right"
+    ];
+
+    regionMap.forEach((selector, i) => {
+        court_g
             .selectAll(selector)
-            .attr("opacity", opacity);
+            .attr("opacity", getRegionOpacity(teamId, i));
+    });
+}
+function applyRegionOpacityRight(teamId) {
+    if (typeof court_g2 === "undefined") return;
+
+    const regionMap = [
+        ".aqua-cyan-region2",
+        ".coral-chartreuse-region2",
+        ".orchid-top-paint-region2",
+        ".sienna-bottom-paint-region2",
+        ".orange-red-center-region2",
+        ".orange-black-center-region-right2",
+        ".orange-red-outer-region2",
+        ".yellow-orange-outer-region2",
+        ".maroon-magenta-region2",
+        ".lime-fuchsia-region2",
+        ".region-11-combined2",
+        ".region-12-combined2",
+        ".orange-red-region2",
+        ".orange-red-region-right2"
+    ];
+
+    regionMap.forEach((selector, i) => {
+        court_g2
+            .selectAll(selector)
+            .attr("opacity", getRegionOpacity(teamId, i));
     });
 }
 
