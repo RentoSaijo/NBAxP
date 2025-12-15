@@ -6,17 +6,17 @@ NBAxP is a D3 web application that visualizes NBA shot quality using a custom **
 
 An **Expected Points (xP)** model assigns an expected point value to every shot attempt by estimating the probability that the shot is made given its context, then multiplying by the shot’s point value (2 or 3). Conceptually, it is analogous to an **expected goals (xG)** model in hockey: instead of letting makes/misses dominate the story, it estimates what an average shooter would be expected to score from the same shot conditions. This “de-lucks” the results and helps distinguish whether a team is consistently creating high-quality looks or relying on difficult shot-making.
 
-In this project, the probability of a made shot is produced by **logistic regression**. Logistic regression models the log-odds of a make as a linear function of shot features, then converts that into a probability with the sigmoid function. For a shot with linear predictor \(\eta\), the make probability is:
+In this project, the probability of a made shot is produced by **logistic regression**. Logistic regression models the log-odds of a make as a linear function of shot features, then converts that into a probability with the sigmoid function. For a shot with linear predictor $\eta$, the make probability is:
 
-\[
+$$
 P(\text{made}) = \sigma(\eta) = \frac{1}{1 + e^{-\eta}}
-\]
+$$
 
 Expected points for an individual attempt are then computed as:
 
-\[
+$$
 xP_{2} = 2 \cdot P(\text{made}_{2}) \quad\text{and}\quad xP_{3} = 3 \cdot P(\text{made}_{3})
-\]
+$$
 
 Aggregating these values across thousands of shots produces an estimate of how many points a team would be expected to score (and where) based purely on shot quality and context.
 
@@ -40,23 +40,23 @@ The training/test split is done by season prefix within the game ID (`gid`). Sho
 
 For **two-pointers**, the model includes distance, shot subtype, descriptor, and three context flags. The two-point linear predictor can be written as:
 
-\[
+$$
 \eta_{2} = \beta_0 + \beta_1\cdot\text{distance} + \beta(\text{subType}) + \beta(\text{descriptor}) + \beta_{TO}\cdot\text{isFromTurnOver} + \beta_{SC}\cdot\text{isSecondChance} + \beta_{FB}\cdot\text{isFastBreak}
-\]
+$$
 
-\[
+$$
 P(\text{made}_{2}) = \frac{1}{1 + e^{-\eta_2}}, \qquad xP_{2} = 2\cdot P(\text{made}_{2})
-\]
+$$
 
 For **three-pointers**, the model includes distance, descriptor, and fast break context:
 
-\[
+$$
 \eta_{3} = \beta_0 + \beta_1\cdot\text{distance} + \beta(\text{descriptor}) + \beta_{FB}\cdot\text{isFastBreak}
-\]
+$$
 
-\[
+$$
 P(\text{made}_{3}) = \frac{1}{1 + e^{-\eta_3}}, \qquad xP_{3} = 3\cdot P(\text{made}_{3})
-\]
+$$
 
 Because `subType` and `descriptor` are categorical, R’s GLM expands them into indicator variables with one omitted **reference level**; every listed coefficient should be interpreted as the effect on log-odds *relative to the reference category*, holding other variables constant. Practically, negative coefficients typically reflect more difficult shot types or circumstances (lower make probability), while positive coefficients reflect easier or more favorable contexts.
 
@@ -134,15 +134,15 @@ The 3PT model again shows a clear distance penalty and then adjusts make probabi
 
 ### 5. Model Predictions
 
-Once both logistic regressions are fit on the training seasons, the 2025–26 test-season shots receive **shot-level predictions**. For each two-point attempt, the model produces \(P(\text{made}_2)\) and the pipeline stores \(xP_2 = 2\cdot P(\text{made}_2)\); for each three-point attempt, it stores \(xP_3 = 3\cdot P(\text{made}_3)\). These predicted shot-level xP values are the building blocks for every visualization element on the site, because they allow the app to compare teams and regions using expected scoring value rather than makes/misses.
+Once both logistic regressions are fit on the training seasons, the 2025–26 test-season shots receive **shot-level predictions**. For each two-point attempt, the model produces $P(\text{made}_2)$ and the pipeline stores $xP_2 = 2\cdot P(\text{made}_2)$; for each three-point attempt, it stores $xP_3 = 3\cdot P(\text{made}_3)$. These predicted shot-level xP values are the building blocks for every visualization element on the site, because they allow the app to compare teams and regions using expected scoring value rather than makes/misses.
 
-To connect shot-level xP to a floor map, every predicted shot is assigned to one of **14 predefined half-court regions**. Region membership is determined by point-in-polygon checks against fixed region polygons defined in the same coordinate space as the D3 court drawing. Because the modeling data uses an “R-style” attacking coordinate system where \(x\) increases toward the hoop and \(y\) runs left-to-right, the region assignment converts each shot into the “JS court” coordinate system used by the web map via \(x_{JS} = y_{R}\) and \(y_{JS} = 43 - x_{R}\). Shots outside the half-court bounds are excluded from region assignment, and a small nearest-region fallback (within a fixed radius) is used when a point is very close to a region boundary.
+To connect shot-level xP to a floor map, every predicted shot is assigned to one of **14 predefined half-court regions**. Region membership is determined by point-in-polygon checks against fixed region polygons defined in the same coordinate space of the D3 court drawing. Because the modeling data uses an “R-style” attacking coordinate system where $x$ increases toward the hoop and $y$ runs left-to-right, the region assignment converts each shot into the “JS court” coordinate system used by the web map via $x_{JS} = y_{R}$ and $y_{JS} = 43 - x_{R}$. Shots outside the half-court bounds are excluded from region assignment, and a small nearest-region fallback (within a fixed radius) is used when a point is very close to a region boundary.
 
 After region labeling, the pipeline aggregates by **team × region** and sums expected points, while also tallying supporting context counts (jump shots, layups, dunks, hooks, and whether attempts came from turnovers, second chances, or fast breaks). To make values comparable across teams with different numbers of games played, each statistic is then scaled into a season-like pace using:
 
-\[
+$$
 \text{Stat Pace per 82} = \frac{\text{Stat Total}}{\text{Games Played}} \times 82
-\]
+$$
 
 This produces the final dataset consumed by the D3 app. On the website, each of the 14 polygons is drawn and its opacity is driven by the team’s **Expected Points pace per 82** in that region, which allows you to visually identify where a team is creating high-value opportunities (high-opacity regions) versus where its shot creation yields less expected scoring value (low-opacity regions).
 
