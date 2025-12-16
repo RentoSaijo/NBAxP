@@ -121,7 +121,6 @@ class Court {
         this.bindGlobals();
         draw_court();
 
-
         // initialize slider if Slider() is defined
         if (typeof Slider === 'function') {
             Slider();

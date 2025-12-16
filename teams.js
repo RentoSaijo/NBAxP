@@ -104,36 +104,36 @@ const TEAM_COLOR2={
 }
 
 const LEFT_REGION_MAP = {
-    ".aqua-cyan-region": 2,
-    ".coral-chartreuse-region": 3,
-    ".orchid-top-paint-region": 4,
-    ".sienna-bottom-paint-region": 5,
-    ".orange-red-center-region": 6,
-    ".orange-black-center-region-right": 7,
-    ".orange-red-outer-region": 8,
-    ".yellow-orange-outer-region": 9,
-    ".maroon-magenta-region": 10,
-    ".lime-fuchsia-region": 11,
-    ".region-11-combined": 12,
-    ".region-12-combined": 13,
-    ".orange-red-region": 14,
-    ".orange-red-region-right": 15
+    ".coral-chartreuse-region": 2,
+    ".aqua-cyan-region":3,
+    ".maroon-magenta-region":4,
+    ".lime-fuchsia-region":5,
+    ".sienna-bottom-paint-region":6,
+    ".orchid-top-paint-region":7,
+    ".orange-red-region":8,
+    ".orange-red-region-right":9,
+    ".orange-red-center-region":10,
+    ".orange-black-center-region-right":11,
+    ".region-11-combined":12,
+    ".region-12-combined":13,
+    ".orange-red-outer-region":14,
+    ".yellow-orange-outer-region":15
 };
 const RIGHT_REGION_MAP = {
-    ".aqua-cyan-region2": 2,
-    ".coral-chartreuse-region2": 3,
-    ".orchid-top-paint-region2": 4,
-    ".sienna-bottom-paint-region2": 5,
-    ".orange-red-center-region2": 6,
-    ".orange-black-center-region-right2": 7,
-    ".orange-red-outer-region2": 8,
-    ".yellow-orange-outer-region2": 9,
-    ".maroon-magenta-region2": 10,
-    ".lime-fuchsia-region2": 11,
-    ".region-11-combined2": 12,
-    ".region-12-combined2": 13,
-    ".orange-red-region2": 14,
-    ".orange-red-region-right2": 15
+    ".coral-chartreuse-region": 2,
+    ".aqua-cyan-region":3,
+    ".maroon-magenta-region":4,
+    ".lime-fuchsia-region":5,
+    ".sienna-bottom-paint-region":6,
+    ".orchid-top-paint-region":7,
+    ".orange-red-region":8,
+    ".orange-red-region-right":9,
+    ".orange-red-center-region":10,
+    ".orange-black-center-region-right":11,
+    ".region-11-combined":12,
+    ".region-12-combined":13,
+    ".orange-red-outer-region":14,
+    ".yellow-orange-outer-region":15
 };
 
 
@@ -147,7 +147,7 @@ window.SELECTED_TEAMS = {
     right: { id: null, color: null }
 };
 
-//window.onload(addRegionHoverLeft(window.SELECTED_TEAMS.left.id));
+
 window.addEventListener("load", (event) => {
     addRegionHoverLeft(window.SELECTED_TEAMS.left.id);
     addRegionHoverRight((window.SELECTED_TEAMS.right.id));
@@ -238,6 +238,25 @@ function updateTeamLogo(side, teamId) {
     img.src = `logos/${teamId}.webp`;
 }
 
+function getRow(thisTeamId, hoverRegion, hoverSide) {
+    let hoverIndex = 0;
+    if (hoverSide === "Left") {
+        hoverIndex = Object.keys(LEFT_REGION_MAP).indexOf("." + hoverRegion);
+    }
+    else {
+        hoverIndex = Object.keys(RIGHT_REGION_MAP).indexOf("." + hoverRegion);
+    }
+
+    Object.keys(csvData[hoverIndex]).forEach(key => {
+        if (key.startsWith(thisTeamId)) {
+            const keyNoTeam = key.substring(4)
+            const keyWithDashes = keyNoTeam.replaceAll("_", "-");
+            console.log(`value-${hoverSide}-${keyWithDashes}`);
+            document.getElementById(`value-${hoverSide}-${keyWithDashes}`).textContent = csvData[hoverIndex][key];
+        }
+    });
+    return csvData[hoverIndex][1];
+}
 
 // ===============================
 // CSV STATS LOADING
@@ -250,43 +269,22 @@ function loadTeamStats(thisTeamId) {
                 loadTeamStats(thisTeamId);
             })
             .catch(err => console.error("CSV load failed:", err));
-        return;
+
+
+    }
+    if (window.SELECTED_TEAMS.left.id) {
+        applyRegionOpacityLeft(window.SELECTED_TEAMS.left.id);
     }
 
-    function getRow(thisTeamId) {
-        return csvData.find(r =>
-            Object.keys(r).some(c => c.startsWith(thisTeamId + "_"))
-        );
+    if (window.SELECTED_TEAMS.right.id) {
+        applyRegionOpacityRight(window.SELECTED_TEAMS.right.id);
     }
+}
 
-    const leftRow = getRow(window.SELECTED_TEAMS.left.id);
-    const rightRow = getRow(window.SELECTED_TEAMS.right.id);
+function loadHoverStats(hoverRegion) {
+    const leftRow = getRow(window.SELECTED_TEAMS.left.id, hoverRegion, "left");
+    const rightRow = getRow(window.SELECTED_TEAMS.right.id, hoverRegion, "right");
 
-    allStats.forEach(stat => {
-        const id = stat.replace(/ /g, "-");
-
-        const leftKey = window.SELECTED_TEAMS.left.id
-            ? `${window.SELECTED_TEAMS.left.id}_${stat.replace(/ /g, "_")}`
-            : null;
-
-        const rightKey = window.SELECTED_TEAMS.right.id
-            ? `${window.SELECTED_TEAMS.right.id}_${stat.replace(/ /g, "_")}`
-            : null;
-
-        document.getElementById(`value-left-${id}`).textContent =
-            leftRow && leftKey in leftRow ? leftRow[leftKey] : "N/A";
-
-        document.getElementById(`value-right-${id}`).textContent =
-            rightRow && rightKey in rightRow ? rightRow[rightKey] : "N/A";
-
-        if (window.SELECTED_TEAMS.left.id) {
-            applyRegionOpacityLeft(window.SELECTED_TEAMS.left.id);
-        }
-
-        if (window.SELECTED_TEAMS.right.id) {
-            applyRegionOpacityRight(window.SELECTED_TEAMS.right.id);
-        }
-    });
 }
 
 function getRegionOpacity(teamId, regionIndex) {
@@ -335,20 +333,20 @@ function applyRegionOpacityRight(teamId) {
     if (typeof court_g2 === "undefined") return;
 
     const regionMap = [
-        ".coral-chartreuse-region2",
-        ".aqua-cyan-region2",
-        ".maroon-magenta-region2",
-        ".lime-fuchsia-region2",
-        ".sienna-bottom-paint-region2",
-        ".orchid-top-paint-region2",
-        ".orange-red-region2",
-        ".orange-red-region-right2",
-        ".orange-red-center-region2",
-        ".orange-black-center-region-right2",
-        ".region-11-combined2",
-        ".region-12-combined2",
-        ".orange-red-outer-region2",
-        ".yellow-orange-outer-region2",
+        ".coral-chartreuse-region",
+        ".aqua-cyan-region",
+        ".maroon-magenta-region",
+        ".lime-fuchsia-region",
+        ".sienna-bottom-paint-region",
+        ".orchid-top-paint-region",
+        ".orange-red-region",
+        ".orange-red-region-right",
+        ".orange-red-center-region",
+        ".orange-black-center-region-right",
+        ".region-11-combined",
+        ".region-12-combined",
+        ".orange-red-outer-region",
+        ".yellow-orange-outer-region"
     ];
 
     regionMap.forEach((selector, i) => {
@@ -424,33 +422,33 @@ function updateTeamColors() {
             .attr("fill", leftColor);
         court_g.selectAll(".orange-red-region-right")
             .attr("fill", leftColor);
-        court_g2.selectAll(".aqua-cyan-region2")
+        court_g2.selectAll(".aqua-cyan-region")
             .attr("fill", rightColor);
-        court_g2.selectAll(".coral-chartreuse-region2")
+        court_g2.selectAll(".coral-chartreuse-region")
             .attr("fill", rightColor);
-        court_g2.selectAll(".orchid-top-paint-region2")
+        court_g2.selectAll(".orchid-top-paint-region")
             .attr("fill", rightColor);
-        court_g2.selectAll(".sienna-bottom-paint-region2")
+        court_g2.selectAll(".sienna-bottom-paint-region")
             .attr("fill", rightColor);
-        court_g2.selectAll(".orange-red-center-region2")
+        court_g2.selectAll(".orange-red-center-region")
             .attr("fill", rightColor);
-        court_g2.selectAll(".orange-black-center-region-right2")
+        court_g2.selectAll(".orange-black-center-region-right")
             .attr("fill", rightColor);
-        court_g2.selectAll(".orange-red-outer-region2")
+        court_g2.selectAll(".orange-red-outer-region")
             .attr("fill", rightColor);
-        court_g2.selectAll(".yellow-orange-outer-region2")
+        court_g2.selectAll(".yellow-orange-outer-region")
             .attr("fill", rightColor);
-        court_g2.selectAll(".maroon-magenta-region2")
+        court_g2.selectAll(".maroon-magenta-region")
             .attr("fill", rightColor);
-        court_g2.selectAll(".lime-fuchsia-region2")
+        court_g2.selectAll(".lime-fuchsia-region")
             .attr("fill", rightColor);
-        court_g2.selectAll(".region-11-combined2")
+        court_g2.selectAll(".region-11-combined")
             .attr("fill", rightColor);
-        court_g2.selectAll(".region-12-combined2")
+        court_g2.selectAll(".region-12-combined")
             .attr("fill", rightColor);
-        court_g2.selectAll(".orange-red-region2")
+        court_g2.selectAll(".orange-red-region")
             .attr("fill", rightColor);
-        court_g2.selectAll(".orange-red-region-right2")
+        court_g2.selectAll(".orange-red-region-right")
             .attr("fill", rightColor);
     }
 }
@@ -466,13 +464,15 @@ function addRegionHoverLeft(teamId) {
             .on("mouseenter", function () {
                 d3.select(this)
                     .attr("fill", hoverColor);
+
+                loadHoverStats((d3.select(this).attr("class").split(' ')[0]));
             })
             .on("mouseleave", function () {
                 d3.select(this)
                     .attr("fill", baseColor);
+                buildStatsList();
             });
     });
-    getRow(window.SELECTED_TEAMS.left.id)
 }
 
 function addRegionHoverRight(teamId) {
@@ -486,10 +486,12 @@ function addRegionHoverRight(teamId) {
             .on("mouseenter", function () {
                 d3.select(this)
                     .attr("fill", hoverColor);
+                loadHoverStats((d3.select(this).attr("class").split(' ')[0]));
             })
             .on("mouseleave", function () {
                 d3.select(this)
                     .attr("fill", baseColor);
+                buildStatsList();
             });
     });
 }

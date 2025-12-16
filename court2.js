@@ -385,7 +385,7 @@ function draw_court2() {
 
         // draw the shaded region
         court_g2.append("polygon")
-            .attr("class", "coral-chartreuse-region2")
+            .attr("class", "coral-chartreuse-region")
             .attr("points", coralChartreusePx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // choose any color you like
             .attr("opacity", 1)
@@ -443,7 +443,7 @@ function draw_court2() {
 
         // draw the shaded region
         court_g2.append("polygon")
-            .attr("class", "aqua-cyan-region2")
+            .attr("class", "aqua-cyan-region")
             .attr("points", aquaCyanPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // pick any color you like
             .attr("opacity", 1)
@@ -508,7 +508,7 @@ function draw_court2() {
 
         // draw the shaded region
         court_g2.append("polygon")
-            .attr("class", "orchid-top-paint-region2")
+            .attr("class", "orchid-top-paint-region")
             .attr("points", orchidPaintPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // choose any color you like
             .attr("opacity", 1)
@@ -549,7 +549,7 @@ function draw_court2() {
 
         // draw the shaded region
         court_g2.append("polygon")
-            .attr("class", "sienna-bottom-paint-region2")
+            .attr("class", "sienna-bottom-paint-region")
             .attr("points", siennaBottomPaintPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // sienna-like color; tweak if you want
             .attr("opacity", 1)
@@ -719,7 +719,7 @@ function draw_court2() {
 
         // ---- draw the shaded region ----
         court_g2.append("polygon")
-            .attr("class", "orange-red-center-region2")
+            .attr("class", "orange-red-center-region")
             .attr("points", wedgePtsPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // choose any color you like
             .attr("opacity", 1)
@@ -788,7 +788,7 @@ function draw_court2() {
 
         // ---- draw the shaded region (use a different color) ----
         court_g2.append("polygon")
-            .attr("class", "orange-black-center-region-right2")
+            .attr("class", "orange-black-center-region-right")
             .attr("points", wedgePtsPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // light blue; change if you want
             .attr("opacity", 1)
@@ -927,7 +927,7 @@ function draw_court2() {
 
         // ---- draw the shaded region ----
         court_g2.append("polygon")
-            .attr("class", "orange-red-outer-region2")
+            .attr("class", "orange-red-outer-region")
             .attr("points", wedgeOuterPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)    // pick any color you like
             .attr("opacity", 1)
@@ -1012,7 +1012,7 @@ function draw_court2() {
 
         // ---- draw the shaded region ----
         court_g2.append("polygon")
-            .attr("class", "yellow-orange-outer-region2")
+            .attr("class", "yellow-orange-outer-region")
             .attr("points", wedgeOuterPxRight.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // nice yellow; tweak if you want
             .attr("opacity", 1)
@@ -1213,7 +1213,7 @@ function draw_court2() {
 
         // ---- draw the shaded region ----
         court_g2.append("polygon")
-            .attr("class", "maroon-magenta-region2")
+            .attr("class", "maroon-magenta-region")
             .attr("points", maroonMagentaPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // pick any color you like
             .attr("opacity", 1)
@@ -1278,7 +1278,7 @@ function draw_court2() {
 
         // ---- draw the shaded region ----
         court_g2.append("polygon")
-            .attr("class", "lime-fuchsia-region2")
+            .attr("class", "lime-fuchsia-region")
             .attr("points", limeFuchsiaPx.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // pick any color you like
             .attr("opacity", 1)
@@ -1490,7 +1490,7 @@ function draw_court2() {
 
             // Draw combined shaded region for REGION 11 (old 11 + 13)
             court_g2.append("polygon")
-                .attr("class", "region-11-combined2")
+                .attr("class", "region-11-combined")
                 .attr("points", combinedLeftPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", window.SELECTED_TEAMS.right.color)   // any single uniform color you like
                 .attr("opacity", 1)
@@ -1592,7 +1592,7 @@ function draw_court2() {
 
             // Draw combined shaded region for REGION 12 (old 12 + 16)
             court_g2.append("polygon")
-                .attr("class", "region-12-combined2")
+                .attr("class", "region-12-combined")
                 .attr("points", combinedRightPx.map(([x, y]) => `${x},${y}`).join(" "))
                 .attr("fill", window.SELECTED_TEAMS.right.color)
                 .attr("opacity", 1)
@@ -1664,7 +1664,7 @@ function draw_court2() {
         //    from paintTopLeftPx back down to orangeExit (both are on x = lane left)
 
         court_g2.append("polygon")
-            .attr("class", "orange-red-region2")
+            .attr("class", "orange-red-region")
             .attr("points", wedgePts.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // pick any color you like
             .attr("opacity", 1)     // semi-transparent
@@ -1715,7 +1715,7 @@ function draw_court2() {
         //    from paintTopRightPx back down to orangeExit (both are on x = lane right)
 
         court_g2.append("polygon")
-            .attr("class", "orange-red-region-right2")
+            .attr("class", "orange-red-region-right")
             .attr("points", wedgePts.map(([x, y]) => `${x},${y}`).join(" "))
             .attr("fill", window.SELECTED_TEAMS.right.color)   // ⬅ different color; tweak as you like
             .attr("opacity", 1)
